@@ -72,3 +72,11 @@ If you try and run a macOS binary that was downloaded from the internet and/or b
 * Close the terminal window that opens (after clicking open)
 
 Details: https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unidentified-developer-mh40616/mac
+
+## Version numbers
+
+The app and each game core are versioned separately. The release number on this
+repository (for example v1.0.0) is a snapshot label: it means "as shipped with
+Arcade Foundry: Insert Coin 1.0.0". Every game core also has its own x.y.z
+version (shown in the app), which can be higher or lower than the release number.
+A core's major number only changes when its saves stop carrying over.
