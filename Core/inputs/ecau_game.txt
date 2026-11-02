@@ -1,0 +1,16 @@
+# Emergency Call Ambulance: one credit, the ambulance (automatic), the first
+# case's intro left to play, the drive to the hospital at full throttle until
+# the patient's health runs out, game over, the best officers and back to
+# attract. Presses view change and the shift buttons on the way. From the
+# core's first-boot save. steer/accel in the board's units: wheel 0 .. 0x80
+# .. 0xff, pedals 0 .. 0xff.
+frames 12000
+600-605 coin=1
+720-725 start=1
+800-810 accel=255  # ambulance
+2500-10000 accel=255 steer=128
+3200-3205 viewchange=1
+3500-3505 viewchange=1
+3800-3805 shiftup=1
+4100-4105 shiftdown=1
+# game over about frame 8000, attract from about 9500

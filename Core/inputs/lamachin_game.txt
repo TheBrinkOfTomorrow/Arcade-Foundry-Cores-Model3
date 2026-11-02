@@ -1,0 +1,224 @@
+# L.A. Machineguns: one credit, start, the stage select (the shots pick Las
+# Vegas), the briefing, the stage: aimed bursts and corner shots (seeded
+# random) from frame 2600 to 7000; the time or the energy runs out about
+# frame 6500 and the game returns to attract (best gunners, best teams).
+# From the core's first-boot save (the board initialises until about frame
+# 2,000). gunx/guny 0 .. 0xff across and down the screen.
+frames 12000
+600-605 coin=1
+2500-2505 start=1
+2600-2605 gunx=229 guny=59
+2611-2631 gunx=70 guny=171 lefttrigger=1
+2637-2647 gunx=179 guny=116
+2654-2674 gunx=129 guny=144 lefttrigger=1
+2675-2680 gunx=97 guny=113 lefttrigger=1
+2685-2695 gunx=76 guny=75 lefttrigger=1
+2698-2708 gunx=146 guny=108
+2714-2724 gunx=130 guny=219 lefttrigger=1
+2729-2749 gunx=106 guny=108
+2753-2763 gunx=118 guny=199
+2769-2779 gunx=143 guny=144 lefttrigger=1
+2786-2806 gunx=132 guny=134 lefttrigger=1
+2812-2842 gunx=72 guny=99
+2849-2859 gunx=173 guny=84
+2863-2883 gunx=220 guny=196
+2888-2918 gunx=69 guny=141 lefttrigger=1
+2924-2929 gunx=103 guny=201 lefttrigger=1
+2936-2946 gunx=43 guny=31 lefttrigger=1
+2947-2967 gunx=190 guny=43
+2969-2989 gunx=69 guny=31 lefttrigger=1
+2995-3000 gunx=0 guny=0 lefttrigger=1
+3003-3013 gunx=22 guny=37 lefttrigger=1
+3014-3019 gunx=0 guny=0 lefttrigger=1
+3020-3040 gunx=224 guny=56
+3045-3050 gunx=27 guny=219
+3052-3057 gunx=0 guny=0 lefttrigger=1
+3062-3067 gunx=141 guny=23 lefttrigger=1
+3072-3077 gunx=209 guny=118
+3083-3093 gunx=73 guny=39 lefttrigger=1
+3096-3101 gunx=0 guny=0 lefttrigger=1
+3108-3118 gunx=215 guny=116 lefttrigger=1
+3121-3131 gunx=103 guny=82 lefttrigger=1
+3135-3140 gunx=51 guny=187 lefttrigger=1
+3141-3151 gunx=40 guny=132 lefttrigger=1
+3156-3161 gunx=75 guny=198 lefttrigger=1
+3164-3169 gunx=175 guny=218
+3175-3195 gunx=124 guny=87 lefttrigger=1
+3196-3206 gunx=0 guny=0 lefttrigger=1
+3210-3220 gunx=201 guny=38 lefttrigger=1
+3221-3226 gunx=75 guny=42 lefttrigger=1
+3231-3261 gunx=153 guny=180 lefttrigger=1
+3267-3277 gunx=127 guny=124 lefttrigger=1
+3282-3287 gunx=150 guny=164 lefttrigger=1
+3288-3318 gunx=148 guny=46 lefttrigger=1
+3321-3341 gunx=239 guny=191 lefttrigger=1
+3342-3362 gunx=214 guny=188
+3369-3399 gunx=0 guny=0 lefttrigger=1
+3405-3435 gunx=166 guny=173 lefttrigger=1
+3438-3443 gunx=201 guny=35 lefttrigger=1
+3447-3457 gunx=111 guny=116
+3459-3479 gunx=47 guny=81 lefttrigger=1
+3480-3500 gunx=70 guny=193 lefttrigger=1
+3505-3535 gunx=201 guny=196 lefttrigger=1
+3538-3568 gunx=111 guny=84 lefttrigger=1
+3575-3605 gunx=202 guny=221 lefttrigger=1
+3609-3629 gunx=56 guny=141 lefttrigger=1
+3634-3664 gunx=194 guny=37 lefttrigger=1
+3671-3676 gunx=0 guny=0 lefttrigger=1
+3678-3688 gunx=33 guny=220 lefttrigger=1
+3694-3699 gunx=91 guny=115 lefttrigger=1
+3705-3725 gunx=150 guny=89 lefttrigger=1
+3730-3760 gunx=148 guny=79
+3763-3773 gunx=134 guny=196 lefttrigger=1
+3780-3800 gunx=162 guny=202 lefttrigger=1
+3804-3809 gunx=114 guny=204 lefttrigger=1
+3814-3819 gunx=119 guny=80
+3823-3853 gunx=156 guny=100
+3859-3864 gunx=234 guny=201 lefttrigger=1
+3869-3879 gunx=186 guny=113
+3885-3890 gunx=150 guny=198
+3894-3904 gunx=20 guny=119
+3910-3940 gunx=41 guny=115
+3947-3957 gunx=166 guny=164 lefttrigger=1
+3964-3974 gunx=0 guny=0 lefttrigger=1
+3980-4010 gunx=147 guny=160 lefttrigger=1
+4016-4026 gunx=210 guny=34 lefttrigger=1
+4030-4035 gunx=140 guny=188
+4039-4059 gunx=133 guny=23
+4064-4084 gunx=208 guny=216
+4087-4097 gunx=0 guny=0 lefttrigger=1
+4101-4131 gunx=188 guny=91 lefttrigger=1
+4134-4164 gunx=109 guny=24 lefttrigger=1
+4168-4198 gunx=189 guny=94 lefttrigger=1
+4200-4230 gunx=198 guny=93 lefttrigger=1
+4237-4257 gunx=181 guny=219 lefttrigger=1
+4263-4293 gunx=39 guny=146 lefttrigger=1
+4297-4307 gunx=176 guny=38 lefttrigger=1
+4309-4339 gunx=149 guny=87 lefttrigger=1
+4340-4345 gunx=217 guny=113
+4347-4367 gunx=101 guny=133 lefttrigger=1
+4371-4401 gunx=134 guny=50
+4405-4415 gunx=99 guny=56 lefttrigger=1
+4417-4447 gunx=189 guny=232 lefttrigger=1
+4450-4460 gunx=75 guny=84
+4466-4496 gunx=226 guny=207 lefttrigger=1
+4502-4522 gunx=208 guny=198
+4528-4548 gunx=179 guny=187 lefttrigger=1
+4551-4581 gunx=82 guny=106 lefttrigger=1
+4582-4592 gunx=113 guny=48
+4593-4613 gunx=35 guny=203
+4617-4622 gunx=76 guny=227
+4626-4646 gunx=54 guny=108 lefttrigger=1
+4650-4655 gunx=216 guny=68 lefttrigger=1
+4657-4687 gunx=38 guny=103 lefttrigger=1
+4693-4703 gunx=27 guny=102
+4709-4714 gunx=61 guny=233 lefttrigger=1
+4718-4738 gunx=149 guny=163
+4741-4771 gunx=29 guny=116
+4775-4795 gunx=175 guny=168 lefttrigger=1
+4800-4830 gunx=231 guny=193 lefttrigger=1
+4834-4864 gunx=27 guny=43 lefttrigger=1
+4869-4879 gunx=190 guny=144
+4880-4910 gunx=220 guny=197 lefttrigger=1
+4911-4931 gunx=22 guny=53 lefttrigger=1
+4932-4952 gunx=182 guny=135 lefttrigger=1
+4956-4966 gunx=0 guny=0 lefttrigger=1
+4968-4973 gunx=144 guny=154 lefttrigger=1
+4975-4980 gunx=149 guny=102 lefttrigger=1
+4982-4992 gunx=16 guny=49 lefttrigger=1
+4994-4999 gunx=220 guny=29 lefttrigger=1
+5005-5035 gunx=181 guny=235 lefttrigger=1
+5041-5051 gunx=229 guny=225 lefttrigger=1
+5053-5063 gunx=92 guny=103 lefttrigger=1
+5067-5077 gunx=220 guny=92
+5082-5087 gunx=88 guny=151
+5090-5100 gunx=51 guny=194 lefttrigger=1
+5101-5106 gunx=208 guny=67 lefttrigger=1
+5110-5115 gunx=176 guny=22
+5121-5151 gunx=204 guny=213
+5153-5163 gunx=25 guny=192 lefttrigger=1
+5164-5174 gunx=155 guny=63
+5175-5205 gunx=69 guny=56
+5211-5231 gunx=148 guny=161 lefttrigger=1
+5235-5240 gunx=184 guny=236 lefttrigger=1
+5246-5266 gunx=20 guny=70 lefttrigger=1
+5269-5299 gunx=207 guny=67 lefttrigger=1
+5301-5311 gunx=130 guny=239 lefttrigger=1
+5314-5344 gunx=81 guny=173 lefttrigger=1
+5348-5378 gunx=136 guny=233 lefttrigger=1
+5381-5386 gunx=170 guny=176
+5388-5398 gunx=94 guny=238 lefttrigger=1
+5405-5425 gunx=217 guny=238 lefttrigger=1
+5428-5433 gunx=81 guny=218
+5436-5466 gunx=0 guny=0 lefttrigger=1
+5470-5475 gunx=163 guny=49 lefttrigger=1
+5477-5507 gunx=178 guny=166 lefttrigger=1
+5510-5515 gunx=221 guny=217
+5517-5537 gunx=235 guny=74 lefttrigger=1
+5543-5563 gunx=195 guny=116 lefttrigger=1
+5565-5575 gunx=82 guny=186 lefttrigger=1
+5580-5610 gunx=46 guny=132 lefttrigger=1
+5614-5644 gunx=77 guny=73 lefttrigger=1
+5649-5654 gunx=155 guny=188 lefttrigger=1
+5658-5688 gunx=147 guny=85 lefttrigger=1
+5693-5713 gunx=216 guny=142 lefttrigger=1
+5719-5749 gunx=72 guny=87 lefttrigger=1
+5753-5758 gunx=52 guny=68 lefttrigger=1
+5763-5768 gunx=181 guny=91
+5769-5774 gunx=50 guny=127
+5775-5795 gunx=84 guny=137 lefttrigger=1
+5800-5820 gunx=191 guny=40 lefttrigger=1
+5821-5841 gunx=178 guny=86
+5844-5854 gunx=0 guny=0 lefttrigger=1
+5857-5887 gunx=18 guny=105 lefttrigger=1
+5892-5897 gunx=35 guny=192 lefttrigger=1
+5902-5932 gunx=77 guny=218 lefttrigger=1
+5937-5942 gunx=0 guny=0 lefttrigger=1
+5949-5969 gunx=91 guny=21
+5970-5980 gunx=72 guny=119 lefttrigger=1
+5983-5988 gunx=33 guny=78 lefttrigger=1
+5990-5995 gunx=0 guny=0 lefttrigger=1
+5999-6004 gunx=87 guny=164 lefttrigger=1
+6005-6035 gunx=216 guny=48 lefttrigger=1
+6037-6067 gunx=29 guny=162 lefttrigger=1
+6074-6104 gunx=169 guny=226
+6110-6140 gunx=168 guny=48
+6142-6147 gunx=63 guny=54 lefttrigger=1
+6152-6172 gunx=136 guny=134 lefttrigger=1
+6176-6196 gunx=106 guny=208 lefttrigger=1
+6197-6227 gunx=23 guny=125 lefttrigger=1
+6234-6239 gunx=156 guny=138 lefttrigger=1
+6245-6265 gunx=198 guny=132 lefttrigger=1
+6272-6302 gunx=79 guny=158
+6304-6334 gunx=209 guny=108 lefttrigger=1
+6339-6349 gunx=183 guny=184
+6350-6380 gunx=175 guny=149 lefttrigger=1
+6386-6416 gunx=212 guny=198 lefttrigger=1
+6419-6439 gunx=75 guny=186
+6441-6471 gunx=197 guny=200
+6475-6495 gunx=162 guny=119 lefttrigger=1
+6501-6521 gunx=186 guny=18 lefttrigger=1
+6522-6532 gunx=45 guny=18
+6535-6555 gunx=203 guny=119 lefttrigger=1
+6562-6582 gunx=150 guny=169 lefttrigger=1
+6587-6597 gunx=40 guny=170 lefttrigger=1
+6598-6618 gunx=198 guny=197 lefttrigger=1
+6621-6651 gunx=173 guny=17
+6657-6667 gunx=172 guny=99 lefttrigger=1
+6670-6700 gunx=201 guny=140 lefttrigger=1
+6703-6708 gunx=162 guny=109 lefttrigger=1
+6715-6735 gunx=62 guny=77 lefttrigger=1
+6741-6751 gunx=135 guny=76 lefttrigger=1
+6754-6764 gunx=57 guny=16 lefttrigger=1
+6768-6788 gunx=189 guny=66
+6793-6803 gunx=173 guny=17
+6805-6815 gunx=71 guny=16 lefttrigger=1
+6819-6829 gunx=85 guny=117 lefttrigger=1
+6830-6835 gunx=45 guny=94 lefttrigger=1
+6838-6868 gunx=35 guny=134 lefttrigger=1
+6875-6905 gunx=180 guny=32 lefttrigger=1
+6912-6942 gunx=222 guny=150
+6945-6965 gunx=156 guny=159 lefttrigger=1
+6969-6979 gunx=94 guny=134
+6986-6991 gunx=133 guny=216 lefttrigger=1
+6993-7013 gunx=221 guny=195 lefttrigger=1

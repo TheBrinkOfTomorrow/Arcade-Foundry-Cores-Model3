@@ -1,0 +1,60 @@
+# Cyber Troopers Virtual-On Oratorio Tangram test mode: into the menu; the
+# input test (both levers' four ways, both shot triggers and turbo buttons,
+# start); the output test; the sound test (a voice, a system effect, a tune);
+# both bookkeeping pages; then exit (the board initialises again and reaches
+# attract about frame 8900). From the core's first-boot save. The left lever
+# is up/down/left/right, the right one up2..right2; shot1/shot2 the triggers,
+# turbo1/turbo2 the turbo buttons.
+frames 10000
+600-605 test=1
+700-705 service=1
+740-745 service=1
+780-785 test=1
+880-919 up=1 down2=1 shot1=1
+920-959 down=1 up2=1 shot2=1
+960-999 left=1 right2=1 turbo1=1
+1000-1039 right=1 left2=1 turbo2=1
+1040-1079 start=1
+1120-1125 test=1
+1200-1205 service=1
+1240-1245 test=1
+1400-1405 service=1
+1440-1445 test=1
+1600-1605 service=1
+1640-1645 service=1
+1680-1685 service=1
+1720-1725 test=1
+1900-1905 service=1
+1940-1945 test=1
+2200-2205 test=1
+2400-2405 service=1
+2440-2445 test=1
+2700-2705 test=1
+2900-2905 service=1
+2940-2945 service=1
+2980-2985 service=1
+3020-3025 service=1
+3060-3065 service=1
+3100-3105 service=1
+3140-3145 service=1
+3180-3185 service=1
+3220-3225 service=1
+3260-3265 service=1
+3300-3305 service=1
+3340-3345 service=1
+3380-3385 service=1
+3420-3425 service=1
+3460-3465 test=1
+3960-3965 service=1
+4000-4005 service=1
+4040-4045 test=1
+4240-4245 service=1
+4280-4285 service=1
+4320-4325 service=1
+4360-4365 service=1
+4400-4405 test=1
+4800-4805 test=1
+5100-5105 test=1
+5300-5305 service=1
+5340-5345 service=1
+5380-5385 test=1

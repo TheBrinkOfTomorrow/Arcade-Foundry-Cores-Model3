@@ -1,0 +1,49 @@
+# Star Wars Trilogy Arcade test mode: into the menu; the input test (the
+# stick's X and Y, both triggers, both event buttons, start; exits with
+# service and test); the output test (the event and panel lamps, by
+# themselves); the sound test (an effect, a voice, a tune); bookkeeping; then
+# exit to attract. From the core's first-boot save (the feedback lever sets
+# up until about frame 1,500). stickx/sticky in the board's units: 0 .. 0x80
+# .. 0xff (sticky 0 forward); trigger1/trigger2 the triggers, event1/event2
+# the event buttons.
+frames 9000
+1700-1705 test=1
+1800-1805 service=1
+1840-1845 service=1
+1880-1885 service=1
+1920-1925 service=1
+1960-1965 test=1
+2060-2119 stickx=0 sticky=0 trigger1=1
+2120-2179 stickx=255 sticky=255 trigger2=1
+2180-2239 stickx=64 sticky=192 event1=1
+2240-2299 stickx=192 sticky=64 event2=1
+2300-2359 start=1
+2400-2405 service=1 test=1
+2600-2605 service=1
+2640-2645 test=1
+2800-2805 service=1
+2860-2865 service=1
+3000-3005 test=1
+3100-3105 service=1
+3140-3145 test=1
+3300-3305 service=1
+3340-3345 test=1
+3500-3505 service=1
+3540-3545 test=1
+3700-3705 service=1
+3740-3745 test=1
+3900-3905 service=1
+3940-3945 service=1
+3980-3985 service=1
+4020-4025 service=1
+4060-4065 test=1
+4200-4205 service=1
+4240-4245 service=1
+4280-4285 service=1
+4320-4325 service=1
+4360-4365 test=1
+4600-4605 test=1
+4800-4805 service=1
+4840-4845 service=1
+4880-4885 test=1
+# attract from about frame 5000

@@ -1,0 +1,145 @@
+# Star Wars Trilogy Arcade: one credit, start, the stage select left to time
+# out (Yavin), the briefing, the Death Star run: the stick, both triggers and
+# event buttons (seeded random) from frame 3600; the shield runs out, game
+# over about frame 7000 and attract from about 7500. From the core's
+# first-boot save (the feedback lever sets up until about frame 1,500).
+frames 12000
+1700-1705 coin=1
+1800-1805 start=1
+3600-3620 stickx=160 sticky=160 trigger1=1
+3626-3686 stickx=208 sticky=160
+3687-3747 stickx=96 sticky=160 trigger1=1
+3751-3811 stickx=160 sticky=255 trigger1=1 trigger2=1
+3819-3879 stickx=208 sticky=255 trigger1=1
+3883-3903 stickx=255 sticky=160 trigger2=1
+3904-3914 stickx=48 sticky=255 trigger1=1 trigger2=1
+3915-3955 stickx=255 sticky=0 event2=1
+3960-4020 stickx=160 sticky=208 trigger2=1
+4027-4087 stickx=208 sticky=255 trigger1=1 trigger2=1
+4095-4115 stickx=96 sticky=0
+4118-4178 stickx=48 sticky=96 event1=1
+4185-4225 stickx=128 sticky=160 event2=1
+4232-4272 stickx=160 sticky=160 trigger2=1
+4276-4316 stickx=208 sticky=0 event2=1
+4321-4341 stickx=208 sticky=255 trigger1=1
+4350-4360 stickx=208 sticky=208 trigger1=1
+4365-4405 stickx=0 sticky=0 trigger2=1
+4413-4423 stickx=96 sticky=255
+4430-4450 stickx=0 sticky=96 trigger2=1
+4457-4467 stickx=0 sticky=160 trigger1=1 trigger2=1
+4468-4528 stickx=208 sticky=160 trigger1=1
+4537-4577 stickx=160 sticky=48
+4582-4592 stickx=0 sticky=0 trigger1=1 trigger2=1
+4601-4611 stickx=48 sticky=128 trigger1=1
+4616-4636 stickx=208 sticky=0 event2=1
+4642-4682 stickx=96 sticky=48 event2=1
+4689-4749 stickx=128 sticky=255 trigger1=1 trigger2=1
+4756-4766 stickx=160 sticky=255 trigger1=1 trigger2=1
+4771-4831 stickx=208 sticky=208 event1=1
+4835-4875 stickx=128 sticky=96 trigger1=1 trigger2=1
+4880-4920 stickx=0 sticky=255 trigger2=1
+4926-4936 stickx=128 sticky=160 trigger1=1 trigger2=1
+4939-4949 stickx=208 sticky=208 trigger1=1
+4957-4997 stickx=208 sticky=96 trigger1=1 trigger2=1
+5002-5062 stickx=0 sticky=160
+5063-5103 stickx=96 sticky=208 trigger2=1
+5108-5148 stickx=48 sticky=96 trigger1=1
+5154-5194 stickx=255 sticky=160 trigger1=1
+5199-5259 stickx=0 sticky=255 event2=1
+5260-5280 stickx=96 sticky=160 trigger1=1
+5285-5305 stickx=96 sticky=48 event1=1
+5312-5322 stickx=0 sticky=160 trigger1=1
+5328-5348 stickx=128 sticky=255 event2=1
+5351-5361 stickx=96 sticky=208 event1=1
+5365-5425 stickx=96 sticky=48 event2=1
+5427-5437 stickx=160 sticky=48 trigger1=1
+5440-5480 stickx=96 sticky=255 event2=1
+5482-5522 stickx=160 sticky=48 trigger2=1
+5527-5567 stickx=128 sticky=96 event1=1
+5574-5614 stickx=128 sticky=160 trigger2=1
+5615-5675 stickx=48 sticky=48
+5683-5743 stickx=160 sticky=208 trigger1=1
+5744-5804 stickx=255 sticky=255 event1=1
+5813-5853 stickx=160 sticky=96 trigger1=1
+5855-5895 stickx=0 sticky=255 trigger1=1
+5896-5906 stickx=255 sticky=208 trigger1=1 trigger2=1
+5910-5970 stickx=160 sticky=0
+5978-5988 stickx=48 sticky=160 trigger1=1
+5992-6002 stickx=160 sticky=160 trigger2=1
+6003-6013 stickx=96 sticky=48 trigger1=1
+6022-6082 stickx=255 sticky=255
+6088-6108 stickx=48 sticky=0 trigger1=1 trigger2=1
+6110-6130 stickx=48 sticky=255 trigger1=1
+6133-6143 stickx=128 sticky=208 trigger1=1 trigger2=1
+6150-6160 stickx=255 sticky=96 trigger1=1
+6165-6225 stickx=0 sticky=128 trigger1=1
+6226-6236 stickx=255 sticky=48
+6238-6248 stickx=0 sticky=128
+6250-6310 stickx=96 sticky=48 trigger1=1
+6312-6352 stickx=128 sticky=208 trigger2=1
+6357-6397 stickx=96 sticky=48 trigger1=1
+6404-6414 stickx=48 sticky=160
+6421-6431 stickx=160 sticky=48
+6437-6497 stickx=160 sticky=208 event2=1
+6506-6566 stickx=208 sticky=255
+6573-6583 stickx=96 sticky=208 trigger2=1
+6589-6649 stickx=208 sticky=128 trigger2=1
+6650-6670 stickx=48 sticky=160 trigger1=1
+6672-6732 stickx=48 sticky=128 trigger1=1
+6733-6773 stickx=96 sticky=160 event2=1
+6778-6788 stickx=128 sticky=208
+6797-6857 stickx=208 sticky=0 event1=1
+6863-6873 stickx=255 sticky=160 event1=1
+6874-6934 stickx=48 sticky=48 event2=1
+6941-6951 stickx=160 sticky=0 trigger1=1 trigger2=1
+6953-7013 stickx=48 sticky=255
+7019-7029 stickx=0 sticky=255
+7037-7077 stickx=160 sticky=96 event2=1
+7079-7089 stickx=255 sticky=160 trigger1=1 trigger2=1
+7098-7118 stickx=0 sticky=160 event1=1
+7120-7130 stickx=160 sticky=96 event2=1
+7133-7143 stickx=48 sticky=48 event1=1
+7147-7207 stickx=160 sticky=208 event2=1
+7214-7254 stickx=96 sticky=160 trigger2=1
+7260-7320 stickx=0 sticky=128 trigger1=1 trigger2=1
+7324-7384 stickx=255 sticky=208 trigger1=1
+7391-7451 stickx=48 sticky=208 trigger2=1
+7454-7474 stickx=0 sticky=128 event1=1
+7482-7542 stickx=160 sticky=208 event2=1
+7545-7565 stickx=96 sticky=255 trigger1=1
+7568-7608 stickx=48 sticky=255 event1=1
+7617-7657 stickx=208 sticky=208 event2=1
+7664-7704 stickx=48 sticky=96
+7709-7769 stickx=255 sticky=128 trigger1=1
+7772-7812 stickx=48 sticky=96 trigger2=1
+7815-7875 stickx=208 sticky=128 event1=1
+7879-7939 stickx=160 sticky=255 event2=1
+7948-7958 stickx=128 sticky=208
+7965-7975 stickx=128 sticky=48 trigger1=1
+7977-7997 stickx=255 sticky=96 trigger1=1
+8001-8041 stickx=48 sticky=48 trigger1=1 trigger2=1
+8042-8082 stickx=48 sticky=255
+8088-8108 stickx=128 sticky=0 event1=1
+8110-8120 stickx=0 sticky=96 event2=1
+8125-8135 stickx=96 sticky=128 trigger1=1 trigger2=1
+8141-8151 stickx=0 sticky=96 trigger1=1
+8158-8218 stickx=128 sticky=0 trigger1=1
+8226-8286 stickx=48 sticky=160 trigger1=1
+8288-8328 stickx=0 sticky=208 trigger2=1
+8330-8390 stickx=160 sticky=96
+8399-8439 stickx=208 sticky=255 trigger1=1
+8447-8487 stickx=208 sticky=208 event1=1
+8492-8502 stickx=255 sticky=96 event1=1
+8511-8521 stickx=208 sticky=128 trigger1=1 trigger2=1
+8527-8537 stickx=208 sticky=96 event1=1
+8540-8560 stickx=48 sticky=96 event1=1
+8568-8578 stickx=0 sticky=160 trigger1=1
+8584-8644 stickx=160 sticky=96 event1=1
+8647-8707 stickx=128 sticky=96 event2=1
+8710-8720 stickx=0 sticky=208 trigger1=1
+8729-8789 stickx=96 sticky=0 trigger1=1
+8794-8854 stickx=0 sticky=255 trigger1=1
+8855-8915 stickx=160 sticky=96 trigger1=1
+8924-8964 stickx=96 sticky=128 trigger2=1
+8973-8983 stickx=96 sticky=128 event2=1
+8985-9005 stickx=96 sticky=160

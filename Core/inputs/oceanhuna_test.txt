@@ -1,0 +1,51 @@
+# The Ocean Hunter test mode: into the menu; the input test (both guns'
+# pitch and yaw, left and right shots, starts; exits with service and test);
+# the output test (both start lamps and controller reactions on); the sound
+# test (a tune, an effect); bookkeeping (the second page takes two presses
+# to leave); then exit to attract. From the core's first-boot save.
+# gunx/guny (gunx2/guny2) 0 .. 0xff across and down the screen;
+# lefttrigger/righttrigger each gun's shots (2 for player 2).
+frames 9000
+600-605 test=1
+700-705 service=1
+740-745 service=1
+780-785 service=1
+820-825 test=1
+920-959 gunx=0 guny=0 gunx2=255 guny2=255 lefttrigger=1 righttrigger2=1
+960-999 gunx=255 guny=255 gunx2=0 guny2=0 righttrigger=1 lefttrigger2=1
+1000-1039 gunx=64 guny=192 gunx2=192 guny2=64 start=1 start2=1
+1040-1079 gunx=128 guny=128 gunx2=128 guny2=128
+1140-1145 service=1 test=1
+1300-1305 service=1
+1340-1345 test=1
+1500-1505 service=1
+1540-1545 test=1
+1640-1645 service=1
+1680-1685 test=1
+1780-1785 service=1
+1820-1825 test=1
+1920-1925 service=1
+1960-1965 test=1
+2060-2065 service=1
+2100-2105 test=1
+2300-2305 service=1
+2340-2345 test=1
+2500-2505 service=1
+2540-2545 test=1
+2800-2805 service=1
+2840-2845 test=1
+3000-3005 service=1
+3040-3045 test=1
+3200-3205 service=1
+3240-3245 service=1
+3280-3285 service=1
+3320-3325 service=1
+3360-3365 service=1
+3400-3405 test=1
+3700-3705 test=1
+4000-4005 test=1
+4300-4305 test=1
+4500-4505 service=1
+4540-4545 service=1
+4580-4585 test=1
+# attract from about frame 4700

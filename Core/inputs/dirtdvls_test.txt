@@ -1,0 +1,41 @@
+# Dirt Devils test mode: into the menu; the input test (wheel, pedals, shift
+# up/down, view change, start); the output test; the sound test (a voice,
+# an effect, a tune); both bookkeeping pages; then exit (the game restarts
+# into attract). From the core's first-boot save.
+frames 9000
+600-605 test=1
+700-705 service=1
+740-745 service=1
+780-785 test=1
+880-939 steer=0 accel=255 brake=0 viewchange=1 shiftup=1
+940-999 steer=64 accel=128 brake=0
+1000-1059 steer=128 accel=0 brake=255 shiftdown=1
+1060-1119 steer=192 accel=0 brake=128 viewchange=1 start=1
+1120-1179 steer=255 accel=64 brake=64
+1220-1225 test=1
+1320-1325 service=1
+1360-1365 test=1
+1500-1505 service=1
+1540-1600 test=1
+1640-1645 service=1
+1680-1740 test=1
+1800-1805 service=1
+1840-1845 test=1
+2000-2005 service=1
+2040-2045 test=1
+2200-2205 service=1
+2240-2245 test=1
+2800-2805 service=1
+2840-2845 test=1
+3000-3005 service=1
+3040-3045 service=1
+3080-3085 service=1
+3120-3125 service=1
+3160-3165 service=1
+3200-3205 test=1
+3500-3505 test=1
+3800-3805 test=1
+4000-4005 service=1
+4040-4045 service=1
+4080-4085 test=1
+# attract from about frame 5500

@@ -1,0 +1,136 @@
+# Get Bass (Japan, Deluxe): two coins (one credit), cast to start, the area
+# select left to time out (Lodge), then fishing: rod swings and pulls,
+# reeling, casts and the lure stick (seeded random) from frame 2400 to 9000;
+# a fish is landed, the time runs out, the continue count runs out about
+# frame 12000 and attract. The input of bassdx_game.txt with a second coin.
+# From the core's first-boot save.
+frames 14000
+600-605 coin=1
+640-645 coin=1
+1500-1505 cast=1
+2400-2490 rodx=128 rody=128 reel=255
+2504-2564 rodx=64 rody=0 reel=0
+2570-2630 rodx=64 rody=192 reel=255
+2640-2660 rodx=0 rody=64 reel=160 cast=1
+2663-2723 rodx=64 rody=0 reel=0 right=1
+2733-2793 rodx=64 rody=64 reel=0 down=1
+2794-2814 rodx=64 rody=64 reel=0 cast=1
+2820-2840 rodx=255 rody=64 reel=0 up=1
+2844-2904 rodx=128 rody=0 reel=64 left=1
+2907-2927 rodx=128 rody=0 reel=64 cast=1
+2941-3031 rodx=255 rody=0 reel=255 up=1
+3043-3083 rodx=0 rody=128 reel=64 down=1
+3088-3148 rodx=128 rody=64 reel=160 left=1
+3160-3180 rodx=0 rody=128 reel=0 up=1
+3186-3246 rodx=0 rody=255 reel=160 cast=1
+3253-3343 rodx=0 rody=192 reel=0 up=1
+3346-3436 rodx=64 rody=0 reel=0 down=1
+3444-3484 rodx=255 rody=128 reel=255 cast=1
+3497-3557 rodx=0 rody=255 reel=64 down=1
+3562-3572 rodx=192 rody=0 reel=0 cast=1
+3581-3671 rodx=128 rody=64 reel=64 cast=1
+3683-3773 rodx=0 rody=128 reel=64 cast=1
+3776-3786 rodx=64 rody=128 reel=160
+3798-3808 rodx=0 rody=255 reel=255 left=1
+3809-3829 rodx=255 rody=128 reel=64 left=1
+3840-3900 rodx=64 rody=0 reel=0 down=1
+3908-3948 rodx=64 rody=64 reel=255
+3959-4019 rodx=0 rody=64 reel=160 cast=1
+4022-4032 rodx=192 rody=128 reel=0 left=1
+4042-4062 rodx=255 rody=192 reel=160 up=1
+4074-4114 rodx=192 rody=128 reel=64 left=1
+4121-4141 rodx=0 rody=192 reel=255
+4152-4212 rodx=128 rody=64 reel=0 left=1
+4217-4307 rodx=255 rody=255 reel=64
+4320-4360 rodx=255 rody=0 reel=64 cast=1
+4369-4409 rodx=192 rody=128 reel=64 cast=1
+4420-4440 rodx=255 rody=0 reel=160 right=1
+4453-4493 rodx=128 rody=128 reel=160 cast=1
+4507-4597 rodx=128 rody=128 reel=64 up=1
+4603-4663 rodx=128 rody=64 reel=160 cast=1
+4669-4759 rodx=64 rody=255 reel=0
+4773-4813 rodx=192 rody=128 reel=0 up=1
+4824-4884 rodx=64 rody=255 reel=255 right=1
+4895-4955 rodx=128 rody=255 reel=255 down=1
+4969-5009 rodx=0 rody=64 reel=0 right=1
+5017-5107 rodx=64 rody=64 reel=0 up=1
+5119-5129 rodx=192 rody=64 reel=0
+5132-5142 rodx=128 rody=64 reel=160
+5151-5161 rodx=192 rody=192 reel=64 left=1
+5172-5262 rodx=0 rody=255 reel=0
+5274-5314 rodx=0 rody=128 reel=160 cast=1
+5328-5388 rodx=0 rody=255 reel=64
+5397-5487 rodx=128 rody=0 reel=64 right=1
+5496-5536 rodx=255 rody=128 reel=64 down=1
+5539-5599 rodx=192 rody=255 reel=255 cast=1
+5607-5627 rodx=64 rody=255 reel=160 right=1
+5635-5655 rodx=64 rody=255 reel=0 cast=1
+5669-5679 rodx=192 rody=0 reel=64 right=1
+5689-5779 rodx=64 rody=128 reel=255 left=1
+5786-5846 rodx=64 rody=192 reel=64 left=1
+5858-5918 rodx=192 rody=64 reel=255 right=1
+5923-5963 rodx=192 rody=128 reel=160
+5969-6009 rodx=192 rody=128 reel=0 left=1
+6010-6020 rodx=255 rody=192 reel=0 cast=1
+6021-6041 rodx=192 rody=0 reel=160 right=1
+6050-6090 rodx=64 rody=192 reel=0
+6098-6138 rodx=64 rody=128 reel=64 left=1
+6148-6208 rodx=255 rody=255 reel=0
+6221-6241 rodx=128 rody=128 reel=255 up=1
+6247-6337 rodx=128 rody=255 reel=0 left=1
+6343-6383 rodx=255 rody=64 reel=0
+6388-6478 rodx=192 rody=0 reel=255
+6479-6539 rodx=192 rody=255 reel=255 up=1
+6551-6611 rodx=192 rody=192 reel=160 up=1
+6625-6645 rodx=128 rody=192 reel=0 cast=1
+6659-6669 rodx=192 rody=255 reel=64 up=1
+6682-6742 rodx=128 rody=64 reel=0 left=1
+6754-6844 rodx=192 rody=128 reel=255
+6851-6941 rodx=255 rody=0 reel=0 up=1
+6945-6985 rodx=0 rody=0 reel=0 cast=1
+6997-7057 rodx=0 rody=192 reel=160
+7059-7069 rodx=64 rody=255 reel=0 up=1
+7072-7112 rodx=192 rody=64 reel=0 right=1
+7115-7175 rodx=64 rody=0 reel=255
+7176-7266 rodx=0 rody=192 reel=0 cast=1
+7267-7357 rodx=255 rody=0 reel=160 right=1
+7360-7370 rodx=192 rody=0 reel=64 up=1
+7380-7440 rodx=192 rody=128 reel=64
+7443-7483 rodx=64 rody=255 reel=255 cast=1
+7492-7582 rodx=255 rody=64 reel=64
+7591-7611 rodx=128 rody=128 reel=255
+7624-7644 rodx=128 rody=192 reel=160
+7647-7657 rodx=128 rody=0 reel=255 up=1
+7658-7668 rodx=0 rody=255 reel=255 left=1
+7672-7732 rodx=192 rody=192 reel=64
+7745-7835 rodx=0 rody=255 reel=160
+7849-7869 rodx=192 rody=64 reel=0
+7880-7940 rodx=64 rody=64 reel=255 left=1
+7946-7966 rodx=128 rody=128 reel=255 up=1
+7972-8032 rodx=192 rody=64 reel=64 up=1
+8037-8097 rodx=128 rody=255 reel=0 right=1
+8107-8127 rodx=64 rody=192 reel=0
+8128-8138 rodx=64 rody=64 reel=0
+8146-8206 rodx=128 rody=0 reel=160 left=1
+8211-8301 rodx=192 rody=128 reel=160 left=1
+8303-8323 rodx=64 rody=64 reel=0 cast=1
+8337-8397 rodx=192 rody=64 reel=255 cast=1
+8399-8439 rodx=64 rody=128 reel=0
+8447-8457 rodx=128 rody=128 reel=64
+8469-8479 rodx=192 rody=192 reel=0
+8492-8532 rodx=128 rody=192 reel=0 up=1
+8535-8545 rodx=64 rody=0 reel=255
+8556-8566 rodx=255 rody=192 reel=64 up=1
+8571-8591 rodx=192 rody=128 reel=64
+8603-8663 rodx=64 rody=64 reel=0 up=1
+8667-8677 rodx=255 rody=192 reel=64
+8685-8695 rodx=192 rody=192 reel=0
+8696-8786 rodx=255 rody=255 reel=64
+8798-8808 rodx=64 rody=192 reel=0 left=1
+8809-8829 rodx=0 rody=192 reel=160 down=1
+8830-8840 rodx=128 rody=192 reel=160 cast=1
+8851-8861 rodx=0 rody=64 reel=0 up=1
+8870-8930 rodx=64 rody=255 reel=0
+8936-8946 rodx=0 rody=255 reel=0 right=1
+8948-8968 rodx=255 rody=0 reel=160 right=1
+8974-9034 rodx=192 rody=255 reel=160 right=1

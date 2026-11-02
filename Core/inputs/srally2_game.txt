@@ -1,0 +1,15 @@
+# Sega Rally 2: one credit, car select (Escort) and automatic, the name entry
+# left to time out, the Desert stage at full throttle to time out, game over,
+# the replay and back to attract. Presses the view change and the handbrake
+# on the way. From the core's first-boot save. steer/accel in the board's
+# units: wheel 0 .. 0x80 .. 0xff, pedals 0 .. 0xff.
+frames 12000
+600-605 coin=1
+720-725 start=1
+1000-1010 accel=255  # car
+1300-1310 accel=255  # transmission
+1500-9000 accel=255 steer=128
+2600-2605 viewchange=1
+2900-2905 viewchange=1
+3400-3460 handbrake=1
+# game over about frame 5800, attract from about 7000

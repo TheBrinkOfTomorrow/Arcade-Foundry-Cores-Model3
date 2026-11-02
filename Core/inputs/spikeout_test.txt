@@ -1,0 +1,42 @@
+# Spikeout test mode: into the menu; the input test (joystick, shift, beat,
+# charge, jump, start; exits with service and test); the sound test (two
+# sounds sent); the bookkeeping pages; then exit (the board restarts into
+# attract). From the core's first-boot save. Spikeout's buttons: beat,
+# charge, shift, jump.
+frames 9000
+600-605 test=1
+700-705 service=1
+740-745 service=1
+780-785 service=1
+820-825 service=1
+860-865 test=1
+960-999 up=1 beat=1
+1000-1039 down=1 charge=1
+1040-1079 left=1 shift=1
+1080-1119 right=1 jump=1
+1120-1159 start=1
+1200-1205 service=1 test=1
+1400-1405 service=1
+1440-1445 test=1
+1600-1605 service=1
+1640-1645 service=1
+1700-1705 service=1 test=1
+2000-2005 service=1
+2060-2065 service=1 test=1
+2400-2405 test=1
+2600-2605 service=1
+2640-2645 service=1
+2680-2685 service=1
+2720-2725 service=1
+2760-2765 service=1
+2800-2805 test=1
+3100-3105 service=1
+3400-3405 service=1
+3700-3705 service=1
+4000-4005 service=1
+4300-4305 test=1
+4500-4505 service=1
+4540-4545 service=1
+4580-4585 service=1
+4620-4625 test=1
+# attract from about frame 6900

@@ -1,0 +1,58 @@
+# L.A. Machineguns test mode: into the menu; the input test (both guns' aim,
+# triggers and starts; exits with service and test); the output test (the
+# start lamps and gun actions); the sound test (two effects, a voice, a
+# tune); the aim set screen (both guns at the corners and centre, no trigger,
+# so nothing is calibrated); both bookkeeping pages; then exit (the board
+# initialises again and reaches attract about frame 7000). From the core's
+# first-boot save. gunx/guny (gunx2/guny2) 0 .. 0xff across and down the
+# screen; lefttrigger/righttrigger each gun's triggers (2 for player 2).
+frames 9000
+600-605 test=1
+700-705 service=1
+740-745 service=1
+780-785 test=1
+880-919 gunx=0 guny=0 gunx2=255 guny2=255 lefttrigger=1 righttrigger2=1
+920-959 gunx=255 guny=255 gunx2=0 guny2=0 righttrigger=1 lefttrigger2=1
+960-999 gunx=64 guny=192 gunx2=192 guny2=64 start=1 start2=1
+1000-1039 gunx=128 guny=128 gunx2=128 guny2=128
+1100-1105 service=1 test=1
+1200-1205 service=1
+1240-1245 test=1
+1340-1345 service=1
+1380-1385 test=1
+1420-1425 service=1
+1460-1465 test=1
+1500-1505 service=1
+1540-1545 test=1
+1580-1585 service=1
+1620-1625 test=1
+1660-1665 service=1
+1700-1705 test=1
+1840-1845 service=1
+1880-1885 test=1
+1980-1985 service=1
+2020-2025 test=1
+2260-2265 service=1
+2300-2305 test=1
+2540-2545 service=1
+2580-2585 test=1
+2820-2825 service=1
+2860-2865 test=1
+3100-3105 service=1
+3140-3145 test=1
+3280-3285 service=1
+3320-3325 service=1
+3360-3365 service=1
+3400-3405 service=1
+3440-3445 test=1
+3540-3599 gunx=0 guny=0 gunx2=255 guny2=255
+3600-3659 gunx=255 guny=255 gunx2=0 guny2=0
+3660-3719 gunx=128 guny=64 gunx2=64 guny2=192
+3760-3765 test=1
+3900-3905 service=1
+3940-3945 test=1
+4240-4245 test=1
+4540-4545 test=1
+4680-4685 service=1
+4720-4725 service=1
+4760-4765 test=1

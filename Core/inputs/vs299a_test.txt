@@ -1,0 +1,60 @@
+# Virtua Striker 2 '99 test mode: into the menu; the input test (both
+# players' joysticks, short pass, long pass, shoot and start; exits with
+# service and test); the output test (the billboard's 1P side, 2P side and
+# clear checks); the sound test (a tune in BGM mode, an effect in SE mode);
+# the three bookkeeping pages; then exit (the board restarts into attract).
+# From the core's first-boot save. Keys: shortpass, longpass, shoot (and
+# shortpass2, longpass2, shoot2 for player 2).
+frames 9000
+600-605 test=1
+700-705 service=1
+740-745 service=1
+780-785 service=1
+820-825 test=1
+920-959 up=1 shortpass=1 down2=1 longpass2=1
+960-999 down=1 longpass=1 up2=1 shoot2=1
+1000-1039 left=1 shoot=1 right2=1 shortpass2=1
+1040-1079 right=1 left2=1
+1080-1119 start=1 start2=1
+1200-1205 service=1 test=1
+1400-1405 service=1
+1440-1445 test=1
+1640-1645 service=1
+1680-1685 test=1
+1880-1885 service=1
+1920-1925 test=1
+2120-2125 service=1
+2160-2165 test=1
+2300-2305 service=1
+2340-2345 test=1
+2500-2505 service=1
+2540-2545 test=1
+2700-2705 service=1
+2740-2745 service=1
+2780-2785 test=1
+2900-2905 test=1
+3200-3205 service=1 test=1
+3300-3305 service=1
+3340-3345 test=1
+3440-3445 service=1
+3480-3485 test=1
+3700-3705 service=1 test=1
+3800-3805 service=1
+3840-3845 test=1
+4000-4005 service=1
+4040-4045 service=1
+4080-4085 service=1
+4120-4125 service=1
+4160-4165 service=1
+4200-4205 test=1
+4450-4455 service=1
+4700-4705 service=1
+4950-4955 service=1
+5200-5205 service=1
+5450-5455 test=1
+5650-5655 service=1
+5690-5695 service=1
+5730-5735 service=1
+5770-5775 service=1
+5810-5815 test=1
+# attract from about frame 6200

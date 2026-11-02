@@ -1,0 +1,14 @@
+# Le Mans 24: one credit, the 24-hour course, the Porsche and automatic, a race
+# at full throttle until time runs out, the continue countdown, the rank and
+# back to attract. Presses a view button on the way. From the core's
+# first-boot save (the board takes about 1,900 frames to reach attract).
+# steer/accel in the board's units: wheel 0 .. 0x80 .. 0xff, pedals 0 .. 0xff.
+frames 14000
+600-605 coin=1
+2000-2005 start=1
+2150-2160 accel=255  # course
+2400-2410 accel=255  # car
+2650-2660 accel=255  # transmission
+2900-11000 accel=255 steer=128
+4500-4505 view2=1
+# time out about frame 10000, attract from about 13000

@@ -1,0 +1,53 @@
+# Le Mans 24 test mode: into the menu; the input test (wheel, pedals, shift
+# up/down, the four view buttons, start); the output test (start and view 1
+# lamps); the sound test (effects in auto mode, a tune in music mode); both
+# bookkeeping pages; then exit (the game restarts into attract). From the
+# core's first-boot save.
+frames 9000
+600-605 test=1
+700-705 service=1
+740-745 service=1
+780-785 test=1
+880-939 steer=0 accel=255 brake=0 view1=1 shiftup=1
+940-999 steer=64 accel=128 brake=0 view2=1
+1000-1059 steer=128 accel=0 brake=255 view3=1 shiftdown=1
+1060-1119 steer=192 accel=0 brake=128 view4=1 start=1
+1120-1179 steer=255 accel=64 brake=64
+1220-1225 test=1
+1320-1325 service=1
+1360-1365 test=1
+1500-1505 service=1
+1540-1600 test=1
+1640-1645 service=1
+1680-1740 test=1
+1780-1785 service=1
+1820-1825 service=1
+1860-1865 service=1
+1900-1905 service=1
+1940-1945 service=1
+1980-1985 test=1
+2100-2105 service=1
+2140-2145 test=1
+2300-2305 service=1
+2340-2345 test=1
+3200-3205 test=1
+3300-3305 service=1
+3340-3345 service=1
+3380-3385 service=1
+3420-3425 test=1
+3500-3505 start=1
+3900-3905 test=1
+4000-4005 service=1
+4040-4045 test=1
+4200-4205 service=1
+4240-4245 service=1
+4280-4285 service=1
+4320-4325 service=1
+4360-4365 service=1
+4400-4405 test=1
+4700-4705 test=1
+5000-5005 test=1
+5200-5205 service=1
+5240-5245 service=1
+5280-5285 test=1
+# attract from about frame 7000

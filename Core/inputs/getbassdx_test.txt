@@ -1,0 +1,55 @@
+# Get Bass (Japan, Deluxe) test mode: the same input as bassdx_test.txt
+# (the menus match). From the core's first-boot save.
+frames 9000
+600-605 test=1
+700-705 service=1
+740-745 service=1
+780-785 service=1
+820-825 service=1
+860-865 test=1
+960-999 rodx=0 rody=0 reel=255 left=1 up=1 cast=1
+1000-1039 rodx=255 rody=255 reel=128 right=1 down=1 select=1
+1040-1079 rodx=64 rody=192 reel=0 tension=200 start=1
+1080-1119 rodx=128 rody=128
+1200-1205 service=1 test=1
+1400-1405 service=1
+1440-1445 test=1
+1600-1605 service=1
+1640-1645 test=1
+1720-1725 test=1
+1760-1765 service=1
+1800-1805 test=1
+1880-1885 test=1
+1920-1925 service=1
+1960-1965 test=1
+2040-2045 test=1
+2080-2085 service=1
+2120-2125 test=1
+2200-2205 test=1
+2240-2245 service=1
+2280-2285 test=1
+2360-2365 test=1
+2400-2405 service=1
+2440-2445 test=1
+2520-2525 test=1
+2560-2565 service=1
+2600-2605 test=1
+2760-2765 service=1
+2800-2805 test=1
+3000-3005 service=1
+3200-3205 service=1
+3400-3405 service=1
+3600-3605 test=1
+3800-3805 service=1
+3840-3845 service=1
+3880-3885 service=1
+3920-3925 service=1
+3960-3965 service=1
+4000-4005 service=1
+4040-4045 test=1
+4340-4345 test=1
+4640-4645 test=1
+4840-4845 service=1
+4880-4885 service=1
+4920-4925 test=1
+# attract from about frame 5100

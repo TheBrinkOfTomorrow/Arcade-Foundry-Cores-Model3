@@ -1,0 +1,51 @@
+# Emergency Call Ambulance test mode: into the menu; the input test (wheel,
+# pedals, view change, shift up/down, start; exits with service and test);
+# the output test (start, view change and patrol lamps); the sound test (a
+# tune, two effects, the speakers test); both bookkeeping pages; then exit
+# (the game restarts into attract). From the core's first-boot save.
+frames 9000
+600-605 test=1
+700-705 service=1
+740-745 service=1
+780-785 service=1
+820-825 test=1
+920-979 steer=0 accel=255 brake=0 viewchange=1 shiftup=1
+980-1039 steer=64 accel=128 brake=0
+1040-1099 steer=128 accel=0 brake=255 shiftdown=1
+1100-1159 steer=192 accel=0 brake=128 start=1
+1160-1219 steer=255 accel=64 brake=64
+1260-1265 service=1 test=1
+1400-1405 service=1
+1440-1445 test=1
+1600-1605 service=1
+1640-1645 test=1
+1800-1805 service=1
+1840-1845 test=1
+2000-2005 service=1
+2040-2045 test=1
+2200-2205 service=1
+2240-2245 test=1
+2400-2405 service=1
+2440-2445 test=1
+2600-2605 service=1
+2640-2645 test=1
+2900-2905 service=1
+2940-2945 test=1
+3100-3105 test=1
+3300-3305 service=1
+3340-3345 test=1
+3600-3605 service=1
+3640-3645 test=1
+3800-3805 service=1
+3840-3845 service=1
+3880-3885 service=1
+3920-3925 service=1
+3960-3965 service=1
+4000-4005 service=1
+4040-4045 test=1
+4300-4305 test=1
+4600-4605 test=1
+4800-4805 service=1
+4840-4845 service=1
+4880-4885 test=1
+# attract from about frame 5500

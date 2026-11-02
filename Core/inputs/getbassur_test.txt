@@ -1,0 +1,48 @@
+# Get Bass (Upright) test mode: its own input test (cast, select, coin,
+# service, test; the rod's X and Y, reel speed, the lure stick; no tension;
+# test alone exits), the output test (AC motor, clutch, reel break on and
+# off, then exit), the sound test (three sounds), both bookkeeping pages,
+# then exit to attract. From the core's first-boot save.
+frames 9000
+600-605 test=1
+700-705 service=1
+740-745 service=1
+780-785 service=1
+820-825 service=1
+860-865 test=1
+960-999 rodx=0 rody=0 reel=255 left=1 up=1 cast=1
+1000-1039 rodx=255 rody=255 reel=128 right=1 down=1 select=1
+1040-1079 rodx=64 rody=192 reel=0 start=1
+1080-1119 rodx=128 rody=128
+1200-1205 test=1
+1400-1405 service=1
+1440-1445 test=1
+1520-1525 test=1
+1600-1605 test=1
+1640-1645 service=1
+1680-1685 test=1
+1760-1765 test=1
+1800-1805 service=1
+1840-1845 test=1
+1920-1925 test=1
+1960-1965 service=1
+2000-2005 test=1
+2160-2165 service=1
+2200-2205 test=1
+2400-2405 service=1
+2600-2605 service=1
+2800-2805 service=1
+3000-3005 test=1
+3200-3205 service=1
+3240-3245 service=1
+3280-3285 service=1
+3320-3325 service=1
+3360-3365 service=1
+3400-3405 service=1
+3440-3445 test=1
+3740-3745 test=1
+4040-4045 test=1
+4240-4245 service=1
+4280-4285 service=1
+4320-4325 test=1
+# attract from about frame 4700

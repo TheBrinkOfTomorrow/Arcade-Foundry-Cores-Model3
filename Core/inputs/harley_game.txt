@@ -1,0 +1,18 @@
+# Harley-Davidson and L.A. Riders: two coins (one credit), the Fat Boy and
+# automatic, the first stage at full throttle until time runs out, the
+# ranking and back to attract. Presses view change, music select and the
+# shift buttons on the way. From the core's first-boot save. steer/accel in
+# the board's units: handlebar 0 .. 0x80 .. 0xff, grip and brake 0 .. 0xff.
+frames 12000
+600-605 coin=1
+640-645 coin=1
+720-725 start=1
+1200-1210 accel=255  # bike
+1500-1510 accel=255  # transmission
+1800-10000 accel=255 steer=128
+2400-2405 viewchange=1
+2700-2705 viewchange=1
+3000-3005 musicselect=1
+3300-3305 shiftup=1
+3600-3605 shiftdown=1
+# time out about frame 7000, attract from about 7600

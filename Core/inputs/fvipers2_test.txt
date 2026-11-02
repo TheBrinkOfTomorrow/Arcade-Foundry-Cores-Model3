@@ -1,0 +1,55 @@
+# Fighting Vipers 2 test mode: into the menu; the input test (both players'
+# joysticks, punch, kick, guard and start; exits with service and test); the
+# output test (the billboard's 1P side, 2P side and clear checks); the sound
+# test (two sounds sent); the five bookkeeping pages; then exit (the board
+# restarts into attract). From the core's first-boot save (the board shows
+# its warning until about frame 1,200).
+frames 9000
+1300-1305 test=1
+1400-1405 service=1
+1440-1445 service=1
+1480-1485 service=1
+1520-1525 service=1
+1560-1565 test=1
+1660-1699 up=1 punch=1 down2=1 kick2=1
+1700-1739 down=1 kick=1 up2=1 punch2=1
+1740-1779 left=1 guard=1 right2=1 escape2=1
+1780-1819 right=1 escape=1 left2=1 guard2=1
+1820-1859 start=1 start2=1
+2000-2005 service=1 test=1
+2200-2205 service=1
+2240-2245 test=1
+2400-2405 service=1
+2440-2445 test=1
+2640-2645 service=1
+2680-2685 test=1
+2880-2885 service=1
+2920-2925 test=1
+3120-3125 service=1
+3160-3165 test=1
+3300-3305 service=1
+3340-3345 test=1
+3500-3505 service=1
+3540-3545 service=1
+3580-3585 service=1
+3640-3645 service=1 test=1
+3900-3905 service=1
+3940-3945 service=1
+4000-4005 service=1 test=1
+4300-4305 test=1
+4500-4505 service=1
+4540-4545 service=1
+4580-4585 service=1
+4620-4625 service=1
+4660-4665 test=1
+4900-4905 service=1
+5150-5155 service=1
+5400-5405 service=1
+5650-5655 service=1
+5900-5905 test=1
+6100-6105 service=1
+6140-6145 service=1
+6180-6185 service=1
+6220-6225 service=1
+6260-6265 test=1
+# attract from about frame 7500

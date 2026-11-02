@@ -1,0 +1,228 @@
+# Fighting Vipers 2: two coins (two credits), both players start; the timer
+# picks Emi (1P) and Charlie (2P). A VS match: both players move and attack
+# (seeded random joystick, punch, kick and guard) to frame 3800, then 1P alone
+# to frame 8000; 1P wins the match about frame 12000, then loses stage 1 to
+# the computer, the continue count runs out, game over about frame 18000 and
+# attract from about 18500. From the core's first-boot save (the board shows
+# its warning until about frame 1,200).
+frames 20000
+1300-1305 coin=1
+1340-1345 coin=1
+1400-1405 start=1
+1500-1505 start2=1
+3001-3004 up=1 guard=1
+3011-3016 up2=1 punch2=1 guard2=1
+3011-3041 right=1 guard=1
+3019-3024 right2=1 kick2=1
+3033-3045 up2=1 right2=1
+3062-3065 down2=1 punch2=1 guard2=1
+3062-3067 kick=1 guard=1
+3079-3099 right2=1 kick2=1
+3090-3095 up=1 right=1 punch=1 kick=1
+3109-3139 down=1 right=1 guard=1
+3114-3134 right2=1 punch2=1 kick2=1
+3149-3157 up2=1 right2=1 kick2=1
+3158-3170 down=1 right=1 guard=1
+3163-3166 down2=1 kick2=1
+3173-3176 up=1 left=1 punch=1 guard=1
+3175-3205 left2=1 punch2=1
+3188-3200 up=1 right=1 kick=1 guard=1
+3207-3227 down=1 kick=1
+3222-3242 down2=1 guard2=1
+3236-3239 down=1 guard=1
+3246-3251 down=1 right=1 kick=1 guard=1
+3253-3256 down2=1 punch2=1 guard2=1
+3264-3284 down=1 right=1 kick=1
+3275-3283 up2=1 left2=1 kick2=1
+3300-3312 down=1 right=1
+3307-3327 punch2=1 guard2=1
+3325-3345 up=1 left=1 guard=1
+3350-3370 up2=1 right2=1 punch2=1 guard2=1
+3361-3366 up=1 right=1 punch=1 kick=1
+3382-3412 down=1 right=1 kick=1
+3384-3396 up2=1 punch2=1 guard2=1
+3418-3430 kick2=1
+3429-3437 down=1 left=1 kick=1 guard=1
+3434-3439 down2=1 left2=1 kick2=1
+3444-3452 punch2=1
+3454-3474 down2=1 kick2=1 guard2=1
+3455-3463 down=1 left=1 punch=1 guard=1
+3476-3496 down=1 right=1 punch=1 kick=1
+3479-3487 punch2=1
+3495-3515 up2=1 right2=1 kick2=1
+3512-3524 left=1 guard=1
+3537-3545 up2=1 left2=1 kick2=1 guard2=1
+3548-3553 right=1
+3558-3570 up2=1 punch2=1
+3570-3578 right=1
+3587-3599 down2=1 left2=1 punch2=1 guard2=1
+3602-3622 down=1 right=1 kick=1 guard=1
+3610-3613 down2=1 punch2=1
+3625-3655 right2=1 punch2=1 guard2=1
+3640-3670 up=1 right=1 guard=1
+3678-3690 down=1 right=1 guard=1
+3679-3684 down2=1 right2=1 punch2=1
+3692-3712 up2=1 left2=1 kick2=1
+3713-3733 up=1
+3774-3782 up2=1 punch2=1 kick2=1
+3783-3813 up=1 punch=1
+3792-3812 up2=1 left2=1 kick2=1
+3833-3863 guard=1
+3883-3888 up=1
+3906-3911 right=1 kick=1
+3919-3922 up=1 right=1 punch=1 kick=1
+3925-3928 up=1 left=1 guard=1
+3935-3940 punch=1
+3945-3948 punch=1
+3950-3958 right=1 kick=1
+3965-3995 down=1 kick=1 guard=1
+4019-4022 up=1 right=1 kick=1 guard=1
+4025-4030 down=1 punch=1
+4032-4040 up=1 guard=1
+4052-4064 guard=1
+4080-4100 guard=1
+4114-4134 down=1 punch=1 guard=1
+4143-4146 up=1 left=1
+4151-4154 down=1 left=1
+4160-4180 up=1 right=1 punch=1 guard=1
+4198-4206 down=1
+4218-4226 right=1 kick=1 guard=1
+4241-4271 punch=1 kick=1
+4290-4295 guard=1
+4298-4303 down=1 kick=1
+4308-4320 left=1 kick=1 guard=1
+4344-4347 left=1 kick=1
+4371-4383 up=1 guard=1
+4387-4407 left=1 kick=1 guard=1
+4428-4458 up=1 left=1 guard=1
+4481-4493 right=1 kick=1 guard=1
+4495-4500 punch=1 guard=1
+4515-4520 up=1 kick=1 guard=1
+4524-4529 up=1 punch=1
+4531-4536 left=1 punch=1
+4544-4547 down=1 right=1 punch=1 kick=1
+4563-4575 right=1 kick=1 guard=1
+4597-4609 left=1 punch=1 kick=1
+4617-4647 up=1 right=1 punch=1 guard=1
+4665-4668 punch=1 guard=1
+4686-4706 down=1 punch=1
+4729-4741 up=1 left=1 punch=1
+4759-4762 up=1 left=1 guard=1
+4786-4794 right=1 punch=1
+4817-4829 up=1 punch=1
+4861-4864 up=1 right=1 punch=1 kick=1
+4881-4893 left=1 kick=1 guard=1
+4914-4917 guard=1
+4919-4927 right=1 punch=1 kick=1
+4931-4936 down=1 left=1 kick=1
+4941-4961 up=1 left=1 punch=1 guard=1
+4985-4997 down=1
+5010-5022 up=1 guard=1
+5027-5030 up=1 kick=1 guard=1
+5042-5072 up=1 right=1 kick=1
+5096-5099 kick=1 guard=1
+5122-5134 punch=1 kick=1
+5158-5170 right=1 guard=1
+5186-5191 up=1 left=1 guard=1
+5208-5228 down=1 left=1 punch=1 kick=1
+5243-5255 right=1 punch=1 guard=1
+5264-5269 down=1 left=1 kick=1 guard=1
+5279-5299 up=1 right=1 punch=1 kick=1
+5322-5352 up=1 kick=1 guard=1
+5372-5375 up=1 guard=1
+5382-5402 down=1
+5417-5420 up=1 punch=1 kick=1
+5442-5445 down=1 guard=1
+5459-5464 up=1 left=1 punch=1 guard=1
+5471-5491 right=1 punch=1
+5497-5517 up=1 right=1 punch=1
+5529-5549 left=1 punch=1 kick=1
+5567-5575 down=1 kick=1
+5591-5621 left=1 punch=1 guard=1
+5634-5654 down=1 punch=1 guard=1
+5721-5733 down=1 punch=1 guard=1
+5751-5754 down=1 left=1 guard=1
+5768-5776 up=1 right=1 punch=1 kick=1
+5798-5810 up=1 left=1 kick=1 guard=1
+5822-5852 up=1
+5861-5881 left=1 punch=1 guard=1
+5904-5916 guard=1
+5932-5952 down=1 left=1 punch=1 kick=1
+5959-5962 punch=1 guard=1
+5970-6000 up=1 right=1 kick=1
+6005-6017 down=1 right=1
+6025-6033 left=1 punch=1 guard=1
+6054-6059 kick=1 guard=1
+6082-6094 down=1 left=1 guard=1
+6112-6132 down=1 punch=1 guard=1
+6156-6161 up=1 guard=1
+6163-6175 down=1 right=1
+6198-6228 up=1
+6248-6260 up=1 left=1 punch=1 guard=1
+6270-6290 down=1 left=1 punch=1
+6294-6314 up=1 left=1 kick=1
+6328-6336 down=1 punch=1
+6343-6355 up=1 right=1 punch=1 guard=1
+6378-6386 down=1 punch=1
+6397-6417 down=1 left=1 punch=1
+6430-6433 down=1 right=1
+6447-6467 down=1 left=1 kick=1
+6490-6498 down=1 left=1 punch=1 kick=1
+6504-6516 down=1 right=1 punch=1 kick=1
+6527-6530 right=1
+6542-6550 up=1 left=1 punch=1 kick=1
+6561-6591 up=1 right=1 kick=1 guard=1
+6595-6615 left=1 punch=1 guard=1
+6636-6656 down=1
+6674-6704 up=1 guard=1
+6707-6712 down=1 left=1 kick=1 guard=1
+6721-6741 right=1 punch=1
+6746-6749 up=1 right=1
+6762-6767 up=1 left=1 guard=1
+6771-6779 down=1 left=1 guard=1
+6786-6798 down=1 left=1
+6809-6821 down=1 punch=1 kick=1
+6837-6867 left=1 guard=1
+6879-6884 up=1 kick=1
+6901-6906 up=1 left=1 kick=1
+6919-6924 down=1 kick=1
+6934-6954 up=1 right=1 punch=1 guard=1
+6966-6974 down=1 right=1 kick=1 guard=1
+6998-7028 up=1 left=1 punch=1 kick=1
+7042-7072 right=1 kick=1 guard=1
+7093-7123 up=1 guard=1
+7134-7146 down=1 left=1 kick=1
+7156-7164 down=1 left=1 punch=1 guard=1
+7168-7173 up=1 left=1 punch=1 guard=1
+7179-7182 up=1 guard=1
+7189-7197 up=1 punch=1 kick=1
+7219-7231 kick=1 guard=1
+7243-7248 up=1 right=1 kick=1 guard=1
+7259-7271 down=1 guard=1
+7283-7288 down=1 left=1 punch=1
+7294-7299 up=1 left=1 guard=1
+7305-7317 up=1 left=1 guard=1
+7321-7329 left=1 kick=1
+7353-7358 guard=1
+7407-7412 up=1 punch=1 guard=1
+7428-7436 down=1 guard=1
+7454-7474 up=1 guard=1
+7496-7526 up=1 right=1 kick=1
+7529-7541 down=1 left=1 punch=1 guard=1
+7562-7570 down=1 right=1
+7591-7611 up=1 kick=1 guard=1
+7629-7649 down=1 left=1 punch=1 guard=1
+7673-7685 down=1 punch=1 guard=1
+7699-7719 down=1 left=1 punch=1
+7724-7736 down=1 punch=1
+7759-7779 down=1 punch=1
+7793-7801 down=1 left=1
+7825-7828 right=1 punch=1
+7851-7859 left=1 kick=1
+7861-7866 up=1 right=1 punch=1 kick=1
+7870-7878 down=1 left=1 punch=1
+7895-7900 up=1 punch=1 guard=1
+7906-7926 kick=1
+7950-7970 down=1 right=1 punch=1
+7973-7978 down=1 right=1 punch=1
+7996-8004 down=1 right=1 kick=1

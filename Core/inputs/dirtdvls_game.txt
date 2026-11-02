@@ -1,0 +1,15 @@
+# Dirt Devils: one credit, the Desert Buggy (automatic), Novice Canyon, a race
+# at full throttle until time runs out, game over and back to attract.
+# Presses the view change on the way. From the core's first-boot save (the
+# board takes about 1,700 frames to reach attract). steer/accel in the
+# board's units: wheel 0 .. 0x80 .. 0xff, pedals 0 .. 0xff.
+frames 12000
+600-605 coin=1
+1800-1805 start=1
+2000-2010 accel=255  # car
+2400-2410 accel=255  # course
+2700-2710 accel=255
+3000-11000 accel=255 steer=128
+4500-4505 viewchange=1
+4800-4805 viewchange=1
+# game over about frame 9000, attract from about 10000

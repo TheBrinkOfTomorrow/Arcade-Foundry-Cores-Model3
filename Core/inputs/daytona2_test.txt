@@ -1,0 +1,43 @@
+# Daytona USA 2 test mode: into the menu; the input test (wheel, pedals, view
+# buttons, shifter); the output test; the sound test's automatic mode;
+# both bookkeeping pages; then exit to attract. From a single-cabinet save.
+frames 9000
+600-605 test=1
+700-705 service=1
+740-745 service=1
+780-785 service=1
+820-825 test=1
+920-979 steer=0 accel=255 brake=0 gear=1 view1=1
+980-1039 steer=64 accel=128 brake=0 gear=2 view2=1
+1040-1099 steer=128 accel=0 brake=255 gear=3 view3=1
+1100-1159 steer=192 accel=0 brake=128 gear=4 view4=1
+1160-1219 steer=255 accel=64 brake=64 gear=0 view1=1
+1220-1225 start=1
+1260-1265 service=1 test=1
+1460-1465 service=1
+1500-1505 test=1
+1840-1845 test=1
+2040-2045 service=1
+2080-2085 test=1
+2220-2225 service=1
+2260-2265 test=1
+2900-2905 test=1
+3100-3105 service=1
+3140-3145 service=1
+3180-3185 service=1
+3220-3225 service=1
+3260-3265 service=1
+3300-3305 test=1
+3500-3505 service=1
+3540-3545 service=1
+3580-3585 service=1
+3620-3625 service=1
+3660-3665 service=1
+3700-3705 test=1
+4040-4045 test=1
+4340-4345 test=1
+4540-4545 service=1
+4580-4585 service=1
+4620-4625 service=1
+4660-4665 test=1
+# attract from about frame 5000

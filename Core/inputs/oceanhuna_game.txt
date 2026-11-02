@@ -1,0 +1,59 @@
+# The Ocean Hunter: two coins (one credit), start, the opening (Baroque Sea,
+# the Kraken poster), the first dive: aimed shots and corner shots (seeded
+# random) from frame 3400; the sharks take the last life about frame 4300,
+# the continue count runs out, game over about frame 5600, then attract.
+# From the core's first-boot save. gunx/guny 0 .. 0xff across and
+# down the screen.
+frames 9000
+600-605 coin=1
+640-645 coin=1
+1600-1605 start=1
+3403-3413 gunx=170 guny=137 lefttrigger=1
+3414-3419 gunx=136 guny=82 lefttrigger=1
+3421-3451 gunx=156 guny=137 lefttrigger=1
+3458-3468 gunx=54 guny=238
+3472-3477 gunx=32 guny=56
+3482-3487 gunx=23 guny=226
+3491-3521 gunx=125 guny=117
+3526-3556 gunx=50 guny=109 lefttrigger=1
+3558-3588 gunx=188 guny=127
+3595-3615 gunx=229 guny=114 lefttrigger=1
+3620-3650 gunx=102 guny=190
+3651-3671 gunx=187 guny=194 lefttrigger=1
+3678-3698 gunx=162 guny=161 lefttrigger=1
+3704-3714 gunx=162 guny=84 lefttrigger=1
+3715-3745 gunx=139 guny=38 lefttrigger=1
+3746-3776 gunx=21 guny=91 lefttrigger=1
+3780-3785 gunx=0 guny=0 lefttrigger=1
+3790-3795 gunx=166 guny=100 lefttrigger=1
+3798-3808 gunx=95 guny=17 lefttrigger=1
+3813-3818 gunx=120 guny=90 lefttrigger=1
+3820-3825 gunx=102 guny=96 lefttrigger=1
+3827-3857 gunx=238 guny=149 lefttrigger=1
+3864-3869 gunx=223 guny=145 lefttrigger=1
+3875-3885 gunx=127 guny=82 lefttrigger=1
+3890-3910 gunx=0 guny=0 lefttrigger=1
+3914-3934 gunx=0 guny=0 lefttrigger=1
+3939-3949 gunx=0 guny=0 lefttrigger=1
+3955-3975 gunx=189 guny=106 lefttrigger=1
+3978-4008 gunx=0 guny=0 lefttrigger=1
+4009-4014 gunx=80 guny=176 lefttrigger=1
+4019-4039 gunx=63 guny=96
+4046-4066 gunx=112 guny=42
+4067-4077 gunx=72 guny=183
+4079-4099 gunx=127 guny=182 lefttrigger=1
+4100-4120 gunx=188 guny=229 lefttrigger=1
+4127-4137 gunx=0 guny=0 lefttrigger=1
+4143-4153 gunx=131 guny=85 lefttrigger=1
+4154-4159 gunx=64 guny=96
+4166-4176 gunx=103 guny=222
+4177-4197 gunx=123 guny=90 lefttrigger=1
+4204-4224 gunx=178 guny=122 lefttrigger=1
+4229-4259 gunx=0 guny=0 lefttrigger=1
+4263-4273 gunx=138 guny=229
+4278-4308 gunx=199 guny=72 lefttrigger=1
+4312-4332 gunx=74 guny=236 lefttrigger=1
+4337-4357 gunx=78 guny=27 lefttrigger=1
+4364-4374 gunx=126 guny=163 lefttrigger=1
+4378-4383 gunx=92 guny=77 lefttrigger=1
+4388-4418 gunx=0 guny=0 lefttrigger=1

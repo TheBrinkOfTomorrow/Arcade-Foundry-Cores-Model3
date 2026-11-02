@@ -1,0 +1,115 @@
+# Virtua Striker 2 '99: one credit, start, the team select left to time out
+# (Japan), the tournament roster, the first match against Bulgaria: the
+# joystick, short pass, long pass and shoot (seeded random) from frame 2800
+# to 6000, then nothing; the match runs its two minutes and is lost (time
+# up about frame 13900), the continue count runs out, game over and attract
+# from about frame 14500. From the core's first-boot save.
+frames 16000
+600-605 coin=1
+720-725 start=1
+2807-2827 up=1 left=1 longpass=1
+2833-2838 longpass=1
+2856-2868 up=1 longpass=1
+2887-2907 longpass=1 shoot=1
+2921-2926 down=1 left=1 longpass=1 shoot=1
+2941-2946 down=1 shortpass=1
+2949-2952 down=1 shortpass=1 longpass=1
+2972-2975 up=1 right=1 shoot=1 shortpass=1
+2980-2988 left=1 longpass=1 shoot=1
+2997-3027 up=1 right=1
+3037-3042 up=1 right=1 longpass=1
+3054-3104 shortpass=1
+3128-3131 up=1 right=1
+3145-3195 down=1 left=1 shortpass=1
+3197-3202 up=1 right=1 longpass=1 shoot=1
+3247-3252 left=1 longpass=1
+3254-3257 down=1 shortpass=1 longpass=1
+3259-3279 up=1 shortpass=1 longpass=1
+3296-3316 left=1 shoot=1
+3320-3332 left=1 longpass=1 shoot=1
+3336-3366 down=1 shortpass=1
+3427-3447 down=1 longpass=1 shoot=1
+3511-3523 left=1 shortpass=1
+3544-3564 longpass=1 shoot=1
+3577-3627 down=1 right=1 shortpass=1 longpass=1
+3647-3697 up=1 shoot=1 shortpass=1
+3710-3713 up=1 left=1 shoot=1
+3721-3733 left=1 shortpass=1 longpass=1
+3735-3747 up=1 left=1
+3762-3765 left=1 shortpass=1
+3781-3789 up=1 left=1 shoot=1 shortpass=1
+3793-3801 right=1
+3883-3933 down=1 right=1 shoot=1 shortpass=1
+3948-3960 up=1 left=1 longpass=1 shoot=1
+3969-3989 up=1 shoot=1
+4011-4016 up=1 shoot=1 shortpass=1
+4030-4050 up=1 left=1 shoot=1 shortpass=1
+4069-4077 down=1 longpass=1 shoot=1
+4088-4093 right=1
+4096-4146 down=1 longpass=1
+4153-4156 down=1
+4159-4162 down=1 left=1 shortpass=1
+4176-4184 shoot=1 shortpass=1
+4197-4205 down=1 shoot=1
+4224-4232 down=1
+4251-4259 up=1
+4274-4286 down=1 longpass=1 shoot=1
+4305-4355 up=1 right=1 shortpass=1 longpass=1
+4362-4392 right=1 shoot=1 shortpass=1
+4413-4433 down=1 left=1 longpass=1
+4438-4441 right=1 shortpass=1 longpass=1
+4447-4452 up=1 shortpass=1
+4461-4511 shortpass=1
+4518-4530 down=1 left=1 shortpass=1 longpass=1
+4549-4569 up=1 right=1
+4576-4596 down=1 left=1 shortpass=1 longpass=1
+4606-4626 up=1 longpass=1 shoot=1
+4628-4648 up=1 right=1 shortpass=1 longpass=1
+4659-4679 down=1 right=1 shortpass=1 longpass=1
+4701-4751 up=1 longpass=1 shoot=1
+4771-4791 right=1
+4800-4830 down=1
+4835-4865 down=1 left=1 shoot=1
+4868-4880 longpass=1 shoot=1
+4901-4904 up=1 left=1 shortpass=1
+4920-4925 up=1 left=1 shoot=1 shortpass=1
+4945-4965 down=1 left=1 shortpass=1
+4968-4988 up=1 shortpass=1 longpass=1
+4991-5021 up=1 right=1 shoot=1
+5041-5044 up=1 shortpass=1
+5047-5067 down=1
+5071-5074 up=1 left=1 shortpass=1 longpass=1
+5091-5111 down=1 right=1 shoot=1
+5113-5143 up=1 longpass=1
+5147-5197 up=1 left=1
+5213-5225 down=1 shoot=1
+5242-5292 down=1
+5305-5335 left=1 shoot=1
+5341-5346 left=1
+5351-5354 up=1
+5376-5379 up=1 left=1
+5381-5393 down=1 right=1 shortpass=1
+5406-5456 up=1 shortpass=1
+5458-5466 down=1 right=1 longpass=1 shoot=1
+5474-5477 down=1 left=1 longpass=1
+5498-5501 up=1 shortpass=1 longpass=1
+5516-5519 right=1 shoot=1
+5531-5551 left=1 longpass=1 shoot=1
+5554-5584 right=1 shortpass=1
+5595-5598 down=1 longpass=1
+5612-5615 right=1 shoot=1 shortpass=1
+5620-5623 up=1 left=1 shoot=1
+5632-5644 up=1 left=1 shoot=1
+5664-5672 up=1 right=1 shoot=1
+5680-5683 right=1 longpass=1
+5699-5711 down=1 left=1 shoot=1
+5725-5730 up=1 left=1 shoot=1
+5733-5741 up=1 shortpass=1
+5753-5773 shortpass=1
+5781-5811 up=1 left=1 longpass=1 shoot=1
+5817-5847 up=1 longpass=1
+5863-5883 up=1 right=1 shortpass=1
+5907-5927 up=1 left=1
+5929-5959 down=1 right=1 shoot=1
+5976-5981 up=1 left=1 shoot=1 shortpass=1
+5999-6019 up=1 shoot=1

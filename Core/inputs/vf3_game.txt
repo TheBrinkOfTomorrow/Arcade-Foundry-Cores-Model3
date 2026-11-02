@@ -1,0 +1,94 @@
+# Virtua Fighter 3: two coins (one credit at the default setting), start,
+# the first character (Akira), then one player against the computer: the
+# joystick all ways, punch, kick, guard and escape, alone and together, held
+# and tapped (seeded random) until frame 5000, then nothing, so the computer
+# wins, the continue count runs out and the game returns to attract.
+frames 12000
+1900-1905 coin=1
+1960-1965 coin=1
+2000-2005 start=1
+2300-2305 punch=1
+2500-2511 left=1 escape=1
+2531-2537 up=1 left=1 kick=1
+2545-2571 up=1 left=1 kick=1
+2580-2604 up=1 right=1 punch=1
+2611-2639 punch=1 guard=1
+2694-2710 kick=1
+2723-2730 up=1 left=1 escape=1
+2741-2758 up=1 right=1 escape=1
+2778-2789 punch=1
+2799-2822 left=1 guard=1
+2841-2863 right=1 guard=1
+2874-2881 up=1 left=1 punch=1 escape=1
+2887-2891 up=1 right=1
+2894-2917 up=1 guard=1
+2936-2948 up=1 punch=1
+2953-2976 right=1
+2987-3010 up=1
+3022-3036 left=1
+3050-3066 up=1 right=1 punch=1
+3084-3096 right=1
+3111-3123 down=1 right=1 escape=1 guard=1
+3125-3141 left=1 guard=1 escape=1
+3154-3179 guard=1
+3196-3200 up=1
+3210-3234 down=1 right=1 kick=1 guard=1
+3247-3270 up=1 right=1 punch=1 kick=1
+3281-3301 down=1 left=1 kick=1
+3316-3340 down=1 guard=1
+3371-3385 escape=1
+3395-3406 kick=1 guard=1
+3426-3435 punch=1
+3448-3470 down=1 left=1 guard=1
+3486-3501 down=1 left=1 escape=1
+3504-3521 up=1 escape=1
+3540-3566 up=1 left=1
+3584-3597 right=1
+3617-3630 right=1 kick=1 escape=1
+3650-3655 down=1 guard=1 kick=1
+3657-3677 up=1
+3682-3696 up=1 left=1
+3699-3714 down=1 punch=1
+3738-3768 escape=1
+3771-3799 down=1 left=1 escape=1
+3802-3821 up=1
+3827-3832 down=1 punch=1
+3836-3856 down=1 right=1 punch=1 guard=1
+3870-3894 down=1 left=1 kick=1
+3906-3923 up=1 escape=1
+3927-3949 down=1 right=1 escape=1
+3952-3975 escape=1 guard=1
+3990-4016 up=1 guard=1
+4036-4042 kick=1
+4044-4058 down=1 left=1 punch=1 escape=1
+4063-4090 down=1
+4092-4111 up=1 right=1 punch=1 punch=1
+4125-4134 punch=1
+4136-4143 down=1 left=1 punch=1
+4146-4174 right=1 punch=1 punch=1
+4193-4207 punch=1 kick=1
+4214-4238 up=1 right=1 escape=1
+4251-4272 down=1 kick=1
+4287-4317 escape=1 kick=1
+4331-4339 up=1 left=1 escape=1
+4359-4386 kick=1 kick=1
+4406-4426 right=1
+4445-4473 up=1 right=1 guard=1
+4481-4494 up=1 left=1
+4502-4511 right=1 kick=1
+4526-4552 right=1 punch=1
+4569-4596 up=1 right=1 punch=1
+4612-4623 punch=1
+4631-4643 right=1 kick=1
+4683-4692 escape=1
+4696-4723 guard=1 guard=1
+4726-4741 down=1 right=1 guard=1 guard=1
+4756-4772 right=1 escape=1
+4786-4794 down=1
+4798-4823 up=1 left=1
+4833-4840 down=1 right=1 guard=1
+4856-4869 down=1 left=1 guard=1 punch=1
+4886-4906 down=1 left=1 kick=1
+4912-4921 up=1 left=1 kick=1 guard=1
+4936-4957 left=1 guard=1
+4964-4990 left=1 escape=1

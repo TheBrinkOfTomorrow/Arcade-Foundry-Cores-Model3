@@ -1,0 +1,84 @@
+# Cyber Troopers Virtual-On Oratorio Tangram: two coins (one credit), start,
+# the machine select left to time out (Temjin), mission 1; both levers, the
+# shot triggers and turbo buttons (seeded random) from frame 5400 to 8000,
+# then nothing, so the computer wins, the continue count runs out and the
+# game returns to attract about frame 11000. From the core's first-boot save
+# (the board initialises until about frame 2,900).
+frames 13000
+600-605 coin=1
+640-645 coin=1
+3200-3205 start=1
+5400-5410 down=1 turbo1=1
+5424-5464 up=1
+5466-5506 right=1 down2=1 turbo2=1
+5509-5519 right=1 right2=1 shot1=1
+5529-5539 down2=1
+5541-5561 down=1 up2=1
+5572-5592 down=1 turbo2=1
+5604-5644 right=1 up2=1
+5653-5693 down=1 turbo2=1
+5712-5732 down2=1 shot1=1 shot2=1
+5743-5803 up=1 left2=1 shot2=1
+5814-5854 left=1 up2=1
+5901-5921 right=1 right2=1 turbo1=1
+5938-5958 up=1 up2=1
+5973-5983 left=1 down2=1
+5996-6036 right=1 down2=1 turbo1=1
+6055-6065 down=1 turbo2=1
+6068-6078 down=1 right2=1 shot1=1 shot2=1
+6087-6092 down=1 up2=1 shot1=1
+6108-6113 down2=1 turbo1=1
+6117-6137 down=1 shot1=1
+6148-6168 up=1 left2=1 turbo2=1
+6172-6192 right=1 up2=1 shot2=1
+6203-6213 down=1 left2=1 shot1=1 shot2=1
+6220-6240 right=1 shot1=1
+6243-6283 up=1 down2=1 turbo2=1
+6296-6316 right=1 shot2=1
+6324-6364 up=1
+6367-6372 up=1 right2=1 turbo1=1
+6378-6438 right2=1 shot2=1
+6447-6467 turbo2=1
+6485-6505 left=1 up2=1 shot2=1
+6513-6523 left=1 left2=1 shot2=1
+6526-6536 left=1 left2=1
+6551-6561 left=1 up2=1
+6564-6584 down=1 up2=1 shot1=1 shot2=1
+6592-6602 left=1 down2=1
+6614-6619 down=1 right2=1
+6633-6638 left=1 left2=1
+6653-6663 right=1 up2=1 shot1=1
+6674-6714 down=1 left2=1 shot1=1 shot2=1
+6722-6742 down=1 left2=1 shot2=1
+6746-6766 up=1 shot2=1
+6772-6792 up2=1 turbo1=1
+6808-6868 left=1 left2=1 shot2=1
+6876-6881 up=1 up2=1
+6891-6896 left=1 left2=1
+6915-6920 up=1 up2=1 turbo1=1
+6932-6992 left=1 right2=1 shot2=1
+6994-6999 right2=1
+7016-7076 down=1 right2=1 turbo2=1
+7082-7087 down=1 turbo2=1
+7105-7110 down=1 down2=1 turbo2=1
+7114-7119 right=1 left2=1 shot2=1
+7127-7147 left=1 up2=1 turbo2=1
+7217-7277 left=1 left2=1 turbo2=1
+7293-7298 up=1 down2=1 turbo2=1
+7315-7355 right2=1
+7368-7378 up=1 up2=1 shot1=1
+7395-7415 down=1 right2=1
+7422-7427 down=1 shot1=1 shot2=1
+7432-7472 right=1 left2=1 shot1=1 shot2=1
+7476-7536 up=1 left2=1 turbo2=1
+7547-7567 up=1 up2=1 turbo2=1
+7569-7574 right=1 down2=1 shot1=1 shot2=1
+7590-7650 down=1 right2=1 turbo2=1
+7666-7726 right=1 left2=1 shot2=1
+7732-7752 right=1 down2=1 turbo1=1
+7764-7774 left=1 shot1=1 shot2=1
+7780-7840 up=1 down2=1 shot1=1
+7848-7908 down=1 right2=1
+7912-7952 up=1 down2=1 turbo1=1
+7965-7985 up=1 down2=1
+7987-8047 down2=1 turbo2=1

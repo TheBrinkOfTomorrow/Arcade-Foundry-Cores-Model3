@@ -1,0 +1,53 @@
+# Magical Truck Adventure test mode: into the menu; the input test (both
+# levers forward and back, both foot pedals and starts; exits with service and
+# test); the output test (both players' lamps); the sound test (a voice, an
+# effect, a tune); device setting (both levers moved, not stored: no start);
+# both bookkeeping pages; then exit to attract. From the core's first-boot
+# save (the board prepares until about frame 1,200). lever/lever2 in the
+# board's units: 0xff forward, 0x80 centred, 0 back (m3run takes only those three);
+# pedal/pedal2 the foot pedals.
+frames 9000
+1300-1305 test=1
+1400-1405 service=1
+1440-1445 service=1
+1480-1485 test=1
+1580-1619 lever=255 lever2=0 pedal=1
+1620-1659 lever=0 lever2=255 pedal2=1
+1660-1699 start=1 start2=1
+1700-1739 lever=128 lever2=128
+1800-1805 service=1 test=1
+1900-1905 service=1
+1940-1945 test=1
+2100-2105 service=1
+2140-2145 test=1
+2300-2305 service=1
+2340-2345 test=1
+2500-2505 test=1
+2700-2705 service=1
+2740-2745 test=1
+2900-2905 service=1
+2940-2945 test=1
+3100-3105 service=1
+3140-3145 test=1
+3400-3405 service=1
+3440-3445 test=1
+3700-3705 service=1
+3740-3745 test=1
+3940-3945 service=1
+3980-3985 test=1
+4100-4105 service=1
+4140-4145 service=1
+4180-4185 service=1
+4220-4225 service=1
+4260-4265 test=1
+4360-4399 lever=255 lever2=0
+4400-4439 lever=0 lever2=255
+4500-4505 test=1
+4600-4605 service=1
+4640-4645 test=1
+4900-4905 test=1
+5200-5205 test=1
+5400-5405 service=1
+5440-5445 service=1
+5480-5485 test=1
+# attract from about frame 5600

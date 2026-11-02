@@ -1,0 +1,86 @@
+# Daytona USA 2: one credit, beginner course, a race to game over (time out).
+# From a single-cabinet save (the core's first boot). steer/accel/brake in
+# the board's units: wheel 0 .. 0x80 .. 0xff, pedals 0 .. 0xff.
+600-605 coin=1
+720-725 start=1
+1000-1010 accel=255  # course
+1500-1510 accel=255  # car
+2000-2010 accel=255  # gearbox
+2200-2308 accel=255 steer=80
+2309-2432 accel=255 steer=80
+2433-2563 accel=255 steer=208
+2564-2713 accel=255 steer=208
+2714-2826 accel=255 steer=48
+2827-2859 accel=255 steer=176
+2860-2988 accel=255 steer=128
+2989-3101 accel=255 steer=128
+3102-3246 accel=255 steer=128
+3247-3290 accel=255 steer=80
+3291-3380 accel=255 steer=128
+3381-3458 accel=255 steer=48
+3459-3501 accel=255 steer=48
+3502-3562 accel=255 steer=128
+3563-3685 accel=255 steer=128
+3686-3767 accel=255 steer=80
+3768-3820 accel=255 steer=176
+3821-3870 accel=255 steer=128
+3871-3917 accel=255 steer=48
+3918-4026 accel=255 steer=176
+4027-4072 accel=255 steer=128
+4073-4102 accel=255 steer=128
+4103-4158 accel=255 steer=128
+4159-4209 accel=255 steer=128
+4210-4276 accel=255 steer=80
+4277-4331 accel=255 steer=48
+4332-4473 accel=255 steer=208
+4474-4583 accel=255 steer=128
+4584-4636 accel=255 steer=208
+4637-4691 accel=255 steer=176
+4692-4759 accel=255 steer=128
+4760-4835 accel=255 steer=176
+4836-4886 accel=255 steer=128
+4887-4949 accel=255 steer=128
+4950-5021 accel=255 steer=80
+5022-5155 accel=255 steer=48
+5156-5260 accel=255 steer=128
+5261-5366 accel=255 steer=208
+5367-5486 accel=255 steer=80
+5487-5524 accel=255 steer=80
+5525-5599 accel=255 steer=80
+5600-5690 accel=255 steer=208
+5691-5760 accel=255 steer=128
+5761-5851 accel=255 steer=176
+5852-5971 accel=255 steer=128
+5972-6008 accel=255 steer=80
+6009-6158 accel=255 steer=128
+6159-6283 accel=255 steer=80
+6284-6421 accel=255 steer=176
+6422-6453 accel=255 steer=48
+6454-6583 accel=255 steer=176
+6584-6659 accel=255 steer=176
+6660-6763 accel=255 steer=128
+6764-6850 accel=255 steer=128
+6851-6970 accel=255 steer=128
+6971-7079 accel=255 steer=128
+7080-7124 accel=255 steer=128
+7125-7272 accel=255 steer=176
+7273-7346 accel=255 steer=48
+7347-7421 accel=255 steer=48
+7422-7483 accel=255 steer=176
+7484-7526 accel=255 steer=48
+7527-7651 accel=255 steer=80
+7652-7791 accel=255 steer=80
+7792-7825 accel=255 steer=176
+7826-7866 accel=255 steer=128
+7867-7939 accel=255 steer=48
+7940-8047 accel=255 steer=80
+8048-8194 accel=255 steer=128
+8195-8267 accel=255 steer=80
+8268-8415 accel=255 steer=208
+8416-8514 accel=255 steer=128
+8515-8583 accel=255 steer=208
+8584-8653 accel=255 steer=80
+8654-8705 accel=255 steer=128
+8706-8815 accel=255 steer=128
+8816-8937 accel=255 steer=208
+8938-9006 accel=255 steer=176

@@ -1,0 +1,126 @@
+# The Lost World: one credit, start, the stage select (the shots pick expert,
+# stage 3), the run through the InGen lab: both aimed shots and shots at
+# the screen's corner (seeded random) from frame 1700 to 4000; the player
+# dies about frame 3300, the continue count runs out, total score, game over
+# and attract from about frame 4500. From the core's first-boot save (the
+# board shows its copyright until about frame 1,000). gunx/guny 0 .. 0xff
+# across and down the screen; the right trigger (righttrigger) reloads, pressed
+# every 300 frames from 2000 to 3800.
+frames 9000
+600-605 coin=1
+1600-1605 start=1
+1702-1707 gunx=142 guny=210 lefttrigger=1
+1713-1743 gunx=40 guny=140 lefttrigger=1
+1750-1780 gunx=211 guny=212 lefttrigger=1
+1784-1804 gunx=74 guny=167
+1807-1812 gunx=0 guny=0 lefttrigger=1
+1818-1823 gunx=113 guny=191 lefttrigger=1
+1827-1832 gunx=211 guny=128
+1837-1847 gunx=189 guny=72
+1850-1855 gunx=158 guny=180 lefttrigger=1
+1861-1881 gunx=101 guny=200
+1886-1916 gunx=187 guny=64 lefttrigger=1
+1921-1951 gunx=145 guny=116 lefttrigger=1
+1952-1982 gunx=220 guny=119 lefttrigger=1
+1984-2004 gunx=195 guny=214 lefttrigger=1
+2000-2003 righttrigger=1
+2007-2012 gunx=146 guny=43
+2017-2047 gunx=203 guny=23 lefttrigger=1
+2050-2080 gunx=59 guny=144 lefttrigger=1
+2081-2091 gunx=236 guny=156 lefttrigger=1
+2096-2116 gunx=163 guny=106 lefttrigger=1
+2119-2124 gunx=235 guny=226
+2130-2140 gunx=159 guny=68 lefttrigger=1
+2141-2171 gunx=161 guny=157 lefttrigger=1
+2176-2206 gunx=107 guny=122 lefttrigger=1
+2211-2231 gunx=23 guny=221 lefttrigger=1
+2233-2243 gunx=220 guny=157
+2250-2270 gunx=0 guny=0 lefttrigger=1
+2276-2281 gunx=20 guny=131 lefttrigger=1
+2288-2308 gunx=44 guny=220 lefttrigger=1
+2300-2303 righttrigger=1
+2311-2331 gunx=0 guny=0 lefttrigger=1
+2333-2353 gunx=59 guny=184 lefttrigger=1
+2359-2379 gunx=98 guny=143 lefttrigger=1
+2380-2400 gunx=123 guny=219 lefttrigger=1
+2401-2421 gunx=146 guny=69
+2425-2430 gunx=117 guny=53 lefttrigger=1
+2432-2462 gunx=189 guny=125 lefttrigger=1
+2464-2494 gunx=182 guny=23 lefttrigger=1
+2499-2519 gunx=125 guny=31
+2521-2531 gunx=94 guny=34
+2534-2554 gunx=122 guny=160 lefttrigger=1
+2555-2560 gunx=71 guny=161 lefttrigger=1
+2567-2572 gunx=104 guny=41 lefttrigger=1
+2578-2608 gunx=142 guny=42
+2600-2603 righttrigger=1
+2612-2632 gunx=20 guny=99 lefttrigger=1
+2636-2656 gunx=0 guny=0 lefttrigger=1
+2658-2678 gunx=160 guny=216 lefttrigger=1
+2682-2692 gunx=40 guny=230 lefttrigger=1
+2697-2717 gunx=230 guny=191 lefttrigger=1
+2724-2734 gunx=0 guny=0 lefttrigger=1
+2735-2740 gunx=58 guny=153 lefttrigger=1
+2747-2767 gunx=231 guny=81 lefttrigger=1
+2770-2775 gunx=238 guny=170
+2781-2811 gunx=157 guny=213 lefttrigger=1
+2812-2842 gunx=0 guny=0 lefttrigger=1
+2849-2859 gunx=103 guny=45 lefttrigger=1
+2866-2896 gunx=0 guny=0 lefttrigger=1
+2900-2903 righttrigger=1
+2901-2911 gunx=84 guny=109
+2916-2921 gunx=86 guny=43
+2928-2948 gunx=0 guny=0 lefttrigger=1
+2954-2959 gunx=45 guny=227
+2960-2970 gunx=166 guny=123 lefttrigger=1
+2974-2984 gunx=56 guny=206
+2988-3018 gunx=154 guny=225 lefttrigger=1
+3021-3051 gunx=69 guny=182 lefttrigger=1
+3052-3057 gunx=91 guny=201 lefttrigger=1
+3061-3091 gunx=32 guny=32
+3096-3126 gunx=71 guny=216 lefttrigger=1
+3131-3161 gunx=82 guny=62 lefttrigger=1
+3164-3174 gunx=36 guny=225 lefttrigger=1
+3181-3211 gunx=163 guny=180 lefttrigger=1
+3200-3203 righttrigger=1
+3213-3243 gunx=26 guny=99 lefttrigger=1
+3250-3270 gunx=41 guny=155 lefttrigger=1
+3277-3282 gunx=21 guny=222 lefttrigger=1
+3283-3303 gunx=34 guny=202 lefttrigger=1
+3309-3314 gunx=218 guny=107 lefttrigger=1
+3321-3331 gunx=215 guny=219 lefttrigger=1
+3336-3346 gunx=54 guny=52
+3349-3369 gunx=147 guny=229
+3372-3382 gunx=52 guny=155
+3383-3403 gunx=175 guny=221 lefttrigger=1
+3408-3418 gunx=126 guny=153 lefttrigger=1
+3424-3434 gunx=32 guny=190
+3441-3471 gunx=154 guny=128
+3475-3480 gunx=102 guny=59 lefttrigger=1
+3481-3511 gunx=20 guny=31 lefttrigger=1
+3500-3503 righttrigger=1
+3516-3526 gunx=51 guny=82
+3529-3559 gunx=60 guny=172 lefttrigger=1
+3563-3568 gunx=97 guny=144
+3572-3582 gunx=142 guny=191 lefttrigger=1
+3584-3614 gunx=172 guny=202
+3617-3627 gunx=0 guny=0 lefttrigger=1
+3628-3648 gunx=212 guny=218
+3651-3671 gunx=233 guny=157 lefttrigger=1
+3677-3707 gunx=235 guny=47
+3712-3742 gunx=80 guny=125 lefttrigger=1
+3747-3752 gunx=116 guny=199 lefttrigger=1
+3756-3766 gunx=26 guny=150
+3773-3793 gunx=84 guny=204
+3795-3800 gunx=77 guny=233 lefttrigger=1
+3800-3803 righttrigger=1
+3807-3837 gunx=99 guny=128 lefttrigger=1
+3841-3851 gunx=169 guny=152 lefttrigger=1
+3852-3872 gunx=112 guny=207 lefttrigger=1
+3874-3904 gunx=23 guny=176
+3906-3926 gunx=88 guny=53 lefttrigger=1
+3929-3949 gunx=80 guny=229 lefttrigger=1
+3956-3966 gunx=141 guny=123
+3973-3983 gunx=114 guny=68 lefttrigger=1
+3984-3989 gunx=207 guny=19 lefttrigger=1
+3995-4005 gunx=0 guny=0 lefttrigger=1
