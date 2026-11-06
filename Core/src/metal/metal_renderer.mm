@@ -11,10 +11,12 @@
 
 // Supermodel's headers first: the system's <sys/param.h> defines a PVM
 // macro, which is also one of Supermodel's CRTcolor names.
+#include "af_debug.h"
 #include "metal_renderer.h"
 #include "R3DShadersMetal.h"
 #include "Model3/TileGenBuffer.h"
 
+#import <CoreVideo/CoreVideo.h>
 #import <Metal/Metal.h>
 #include <simd/simd.h>
 
@@ -25,6 +27,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <functional>
+#include <mutex>
 #include <vector>
 
 namespace attract::metal {
@@ -47,6 +50,24 @@ constexpr MTLResourceOptions kUploadOptions = MTLResourceStorageModeShared;
 
 constexpr MTLPixelFormat kColourFormat = MTLPixelFormatRGBA8Unorm;
 constexpr MTLPixelFormat kDepthFormat = MTLPixelFormatDepth32Float_Stencil8;
+
+// The finished frame into a surface (Surface()): the target turned the right
+// way up (its row 0 is the bottom, as OpenGL's) and opaque; the BGRA
+// surface's pixel format puts the bytes in its order.
+const char *const kSurfaceShader = R"(
+#include <metal_stdlib>
+using namespace metal;
+vertex float4 surfaceVertex(uint id [[vertex_id]])
+{
+  const float2 p = float2((id << 1) & 2, id & 2);  // one triangle over the screen
+  return float4(p * 2.0 - 1.0, 0.0, 1.0);
+}
+fragment float4 surfaceFragment(float4 pos [[position]], texture2d<float> target [[texture(0)]])
+{
+  const uint2 at = uint2(pos.xy);
+  return float4(target.read(uint2(at.x, target.get_height() - 1 - at.y)).rgb, 1.0);
+}
+)";
 
 // R3DUniforms in R3DShadersMetal.h
 struct R3DUniforms
@@ -152,6 +173,23 @@ public:
   id<MTLCommandBuffer> cmd;
   std::vector<std::function<void()>> completed;  // run once the frame is done
 
+  // screen_surface (Surface()): frames drawn into IOSurface-backed BGRA
+  // pixel buffers on the GPU instead of being copied to the CPU, so the
+  // front end shows them without a copy (Lindbergh's iOS host does the same).
+  // Six: the last three handed out, the newest finished, the one the frame in
+  // flight draws into, and one to draw into next.
+  static constexpr int kSurfaces = 6;
+  std::mutex surfaceLock;          // the front end asks from its own thread
+  bool surfacesOn = false;         // asked for: under surfaceLock
+  bool surfacesTried = false, surfacesOk = false;
+  CVMetalTextureCacheRef surfaceCache = nullptr;
+  CVPixelBufferRef surface[kSurfaces] = {};
+  CVMetalTextureRef surfaceTexture[kSurfaces] = {};
+  id<MTLRenderPipelineState> surfacePipeline;
+  int surfacePending = -1;         // drawn into by the frame in flight
+  int surfaceReady = -1;           // the newest finished: under surfaceLock
+  int surfaceHanded[3] = {-1, -1, -1};  // newest first: under surfaceLock
+
   // Asynchronous frames (the default; ATTRACT_M3_SYNC=1 turns it off): the
   // GPU draws frame N while the CPU runs the boards for frame N+1, and the
   // screen handed out is one frame old. Everything that writes to memory
@@ -175,6 +213,77 @@ public:
     inflightDone.clear();
     if (inflight)
       [inflight waitUntilCompleted];
+    for (int i = 0; i < kSurfaces; i++)
+    {
+      if (surfaceTexture[i])
+        CFRelease(surfaceTexture[i]);
+      if (surface[i])
+        CVPixelBufferRelease(surface[i]);
+    }
+    if (surfaceCache)
+      CFRelease(surfaceCache);
+  }
+
+  // The surfaces and their pipeline, made the first frame after they were
+  // asked for. False (and frames copied as before) when this GPU can't.
+  bool SetUpSurfaces()
+  {
+    if (surfacesTried)
+      return surfacesOk;
+    surfacesTried = true;
+    NSError *error = nil;
+    id<MTLLibrary> lib = [device newLibraryWithSource:[NSString stringWithUTF8String:kSurfaceShader]
+                                              options:nil
+                                                error:&error];
+    if (!lib)
+    {
+      NSLog(@"Metal: surface shader: %@ (frames copied instead)", error);
+      return false;
+    }
+    MTLRenderPipelineDescriptor *d = [MTLRenderPipelineDescriptor new];
+    d.vertexFunction = [lib newFunctionWithName:@"surfaceVertex"];
+    d.fragmentFunction = [lib newFunctionWithName:@"surfaceFragment"];
+    d.colorAttachments[0].pixelFormat = MTLPixelFormatBGRA8Unorm;
+    surfacePipeline = Pipeline(d);
+    if (!surfacePipeline ||
+        CVMetalTextureCacheCreate(kCFAllocatorDefault, nullptr, device, nullptr, &surfaceCache) != kCVReturnSuccess)
+    {
+      NSLog(@"Metal: no surfaces (frames copied instead)");
+      return false;
+    }
+    NSDictionary *attrs = @{
+      (id)kCVPixelBufferIOSurfacePropertiesKey: @{},
+      (id)kCVPixelBufferMetalCompatibilityKey: @YES,
+    };
+    NSDictionary *textureAttrs = @{(id)kCVMetalTextureUsage: @(MTLTextureUsageRenderTarget | MTLTextureUsageShaderRead)};
+    for (int i = 0; i < kSurfaces; i++)
+    {
+      CVReturn r = CVPixelBufferCreate(kCFAllocatorDefault, size_t(width), size_t(height), kCVPixelFormatType_32BGRA,
+                                       (__bridge CFDictionaryRef)attrs, &surface[i]);
+      if (r == kCVReturnSuccess)
+        r = CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault, surfaceCache, surface[i],
+                                                      (__bridge CFDictionaryRef)textureAttrs, MTLPixelFormatBGRA8Unorm,
+                                                      size_t(width), size_t(height), 0, &surfaceTexture[i]);
+      if (r != kCVReturnSuccess)
+      {
+        NSLog(@"Metal: no surface %d (%d): frames copied instead", i, r);
+        return false;
+      }
+    }
+    surfacesOk = true;
+    return true;
+  }
+
+  // A surface no one may still be reading: not handed out lately, not the
+  // newest finished, not the frame in flight's.
+  int FreeSurface()
+  {
+    std::lock_guard<std::mutex> lock(surfaceLock);
+    for (int i = 0; i < kSurfaces; i++)
+      if (i != surfaceReady && i != surfacePending && i != surfaceHanded[0] && i != surfaceHanded[1] &&
+          i != surfaceHanded[2])
+        return i;
+    return -1;  // not reached: six surfaces, five held at most
   }
 
   // Waits for the frame the GPU is drawing, if any, and runs what was
@@ -266,7 +375,7 @@ std::shared_ptr<Context> CreateContext(int width, int height, std::string *why)
       return nullptr;
     }
     ctx->queue = [ctx->device newCommandQueue];
-    const char *timing = std::getenv("ATTRACT_M3_TIMING");
+    const char *timing = af_debug_env("ATTRACT_M3_TIMING");
     ctx->timing = timing && timing[0] == '1';
 
     MTLCompileOptions *options = [MTLCompileOptions new];
@@ -295,7 +404,7 @@ std::shared_ptr<Context> CreateContext(int width, int height, std::string *why)
     ctx->target = [ctx->device newTextureWithDescriptor:td];
     for (auto &b : ctx->readback)
       b = [ctx->device newBufferWithLength:size_t(width) * height * 4 options:MTLResourceStorageModeShared];
-    const char *sync = std::getenv("ATTRACT_M3_SYNC");
+    const char *sync = af_debug_env("ATTRACT_M3_SYNC");
     ctx->async = !(sync && *sync && *sync != '0');
 
     // The scissor box Supermodel's ResizeGLScreen() leaves (2 pixels in on
@@ -307,10 +416,52 @@ std::shared_ptr<Context> CreateContext(int width, int height, std::string *why)
   }
 }
 
-void EndFrame(Context &ctx, uint8_t *rgba)
+bool EndFrame(Context &ctx, uint8_t *rgba)
 {
   @autoreleasepool
   {
+    bool on;
+    {
+      std::lock_guard<std::mutex> lock(ctx.surfaceLock);
+      on = ctx.surfacesOn;
+    }
+    if (on && ctx.SetUpSurfaces())
+    {
+      // the target into a free surface, on the GPU; no copy to the CPU
+      const int into = ctx.FreeSurface();
+      id<MTLCommandBuffer> cmd = ctx.CommandBuffer();
+      MTLRenderPassDescriptor *pass = [MTLRenderPassDescriptor renderPassDescriptor];
+      pass.colorAttachments[0].texture = CVMetalTextureGetTexture(ctx.surfaceTexture[into]);
+      pass.colorAttachments[0].loadAction = MTLLoadActionDontCare;
+      pass.colorAttachments[0].storeAction = MTLStoreActionStore;
+      id<MTLRenderCommandEncoder> enc = [cmd renderCommandEncoderWithDescriptor:pass];
+      [enc setRenderPipelineState:ctx.surfacePipeline];
+      [enc setFragmentTexture:ctx.target atIndex:0];
+      [enc drawPrimitives:MTLPrimitiveTypeTriangle vertexStart:0 vertexCount:3];
+      [enc endEncoding];
+
+      ctx.WaitInFlight();  // the last frame (normally done already): its surface is finished
+      {
+        std::lock_guard<std::mutex> lock(ctx.surfaceLock);
+        if (ctx.surfacePending >= 0)
+          ctx.surfaceReady = ctx.surfacePending;
+        ctx.surfacePending = into;
+      }
+      [cmd commit];
+      ctx.cmd = nil;
+      ctx.inflight = cmd;
+      ctx.inflightDone.swap(ctx.completed);
+      ctx.completed.clear();
+      if (!ctx.async)
+      {
+        ctx.WaitInFlight();
+        std::lock_guard<std::mutex> lock(ctx.surfaceLock);
+        ctx.surfaceReady = into;
+        ctx.surfacePending = -1;
+      }
+      return false;
+    }
+
     const size_t bytes = size_t(ctx.width) * ctx.height * 4;
     const int cur = ctx.readbackIndex;
     id<MTLCommandBuffer> cmd = ctx.CommandBuffer();
@@ -346,8 +497,51 @@ void EndFrame(Context &ctx, uint8_t *rgba)
       std::memcpy(rgba, ctx.readback[show].contents, bytes);
     else
       std::memset(rgba, 0, bytes);
-
+    return true;
   }
+}
+
+void *Surface(Context &ctx, int *width, int *height)
+{
+  std::lock_guard<std::mutex> lock(ctx.surfaceLock);
+  ctx.surfacesOn = true;
+  const int i = ctx.surfaceReady;
+  if (i < 0)
+    return nullptr;
+  if (ctx.surfaceHanded[0] != i)
+  {
+    ctx.surfaceHanded[2] = ctx.surfaceHanded[1];
+    ctx.surfaceHanded[1] = ctx.surfaceHanded[0];
+    ctx.surfaceHanded[0] = i;
+  }
+  if (width)
+    *width = ctx.width;
+  if (height)
+    *height = ctx.height;
+  return ctx.surface[i];
+}
+
+bool CopySurface(Context &ctx, uint32_t *argb)
+{
+  std::lock_guard<std::mutex> lock(ctx.surfaceLock);
+  const int i = ctx.surfaceReady;
+  if (i < 0)
+    return false;
+  CVPixelBufferRef b = ctx.surface[i];
+  if (CVPixelBufferLockBaseAddress(b, kCVPixelBufferLock_ReadOnly) != kCVReturnSuccess)
+    return false;
+  const uint8_t *base = static_cast<const uint8_t *>(CVPixelBufferGetBaseAddress(b));
+  const size_t stride = CVPixelBufferGetBytesPerRow(b);
+  for (int y = 0; y < ctx.height; y++)
+  {
+    // BGRA bytes are 0xAARRGGBB words on these little-endian CPUs
+    const uint32_t *src = reinterpret_cast<const uint32_t *>(base + size_t(y) * stride);
+    uint32_t *dst = argb + size_t(y) * ctx.width;
+    for (int x = 0; x < ctx.width; x++)
+      dst[x] = src[x] | 0xff000000u;
+  }
+  CVPixelBufferUnlockBaseAddress(b, kCVPixelBufferLock_ReadOnly);
+  return true;
 }
 
 void FrameStart(Context &ctx)

@@ -28,6 +28,7 @@
 
 /* IBM/Motorola PowerPC 4xx/6xx Emulator */
 
+#include "af_debug.h"
 #include "ppc.h"
 
 #include <cstring>	// memset()

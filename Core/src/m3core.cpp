@@ -1,6 +1,6 @@
 /*
  * Arcade Foundry core for one Model 3 game: Supermodel's CModel3 behind the
- * afcore C interface (Core/include/afcore.h) that the Arcade Foundry: Insert Coin front end
+ * afcore C interface (common/include/afcore.h) that the Arcade Foundry: Insert Coin front end
  * loads. One ROM set per build (CMake M3CORE_ROMSET); the library exports
  * only afcore_api_<romset>().
  *
@@ -15,6 +15,7 @@
  * through the Metal renderer (metal/metal_renderer.h) instead and there is
  * no OpenGL at all.
  */
+#include "af_debug.h"
 #include "afcore.h"
 #include "core_versions.h"
 
@@ -47,6 +48,7 @@
 #include <cstring>
 #include <ctime>
 #include <memory>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -78,7 +80,7 @@ class CoreLogger : public CLogger
 {
 public:
   std::string lastError;
-  bool verbose = std::getenv("ATTRACT_M3_LOG") != nullptr;
+  bool verbose = af_debug_env("ATTRACT_M3_LOG") != nullptr;
 
   void DebugLog(const char *, va_list) override {}
   void InfoLog(const char *fmt, va_list vl) override
@@ -180,6 +182,9 @@ struct afcore
 // The OSD layer Supermodel's machine calls into (OSD/Audio.h, OSD/Video.h).
 // One core per process image, so the current core is a global.
 static afcore *s_core = nullptr;
+// Held by Create, Destroy and CheckRoms: Supermodel's logger is one global,
+// so a check runs only while no game is being made, run or freed.
+static std::recursive_mutex s_coreLock;
 static Game::AudioTypes s_audioType = Game::STEREO_LR;
 
 void SetAudioCallback(AudioCallbackFPtr, void *) {}
@@ -236,14 +241,17 @@ bool BeginFrameVideo()
 }
 
 // The frame is finished in the FBO (or the Metal target): read it back,
-// flip it the right way up and turn RGBA bytes into 0xAARRGGBB words.
+// flip it the right way up and turn RGBA bytes into 0xAARRGGBB words. With
+// Metal, once the front end takes the screen as a surface (ScreenSurface),
+// the frame stays on the GPU and screen() copies it out when asked.
 void EndFrameVideo()
 {
 #ifdef M3CORE_METAL
   if (!s_core || !s_core->metal)
     return;
   afcore *c = s_core;
-  attract::metal::EndFrame(*c->metal, c->readback.data());
+  if (!attract::metal::EndFrame(*c->metal, c->readback.data()))
+    return;
 #else
   if (!s_core || !s_core->superAA)
     return;
@@ -294,7 +302,7 @@ void DefaultConfig(Util::Config::Node &config)
 #else
   bool quadRendering = true;
 #endif
-  if (const char *quads = std::getenv("ATTRACT_M3_QUADS"))
+  if (const char *quads = af_debug_env("ATTRACT_M3_QUADS"))
     quadRendering = quads[0] != '0';
   config.Set("QuadRendering", quadRendering);
 #endif
@@ -423,6 +431,7 @@ void Destroy(afcore *c);
 
 afcore *Create(const char *romPath, const char *saveDir, char *err, size_t errSize)
 {
+  std::lock_guard<std::recursive_mutex> hold(s_coreLock);
   if (s_core)
   {
     SetErr(err, errSize, "this core is already running a game (one at a time)");
@@ -516,7 +525,7 @@ afcore *Create(const char *romPath, const char *saveDir, char *err, size_t errSi
   // The board's clock: the host's time when the core starts, then the
   // board's own frames, so a run depends only on when it starts.
   // ATTRACT_RTC_START (seconds since 1970) fixes the start for checks.
-  const char *rtc = std::getenv("ATTRACT_RTC_START");
+  const char *rtc = af_debug_env("ATTRACT_RTC_START");
   c->rtcStart = rtc ? time_t(std::strtoll(rtc, nullptr, 10)) : std::time(nullptr);
   g_RTCTimeSource = [] { return s_core->rtcStart + time_t(double(s_core->frame) / kFrameHz); };
 
@@ -574,6 +583,7 @@ void Destroy(afcore *c)
 {
   if (!c)
     return;
+  std::lock_guard<std::recursive_mutex> hold(s_coreLock);
 #ifndef M3CORE_METAL
   c->gl.MakeCurrent();
 #endif
@@ -778,7 +788,24 @@ const uint32_t *Screen(afcore *c, int *width, int *height)
     *width = kWidth;
   if (height)
     *height = kHeight;
+#ifdef M3CORE_METAL
+  if (c->metal)
+    attract::metal::CopySurface(*c->metal, c->screen.data());  // surfaces on: the frame is on the GPU
+#endif
   return c->screen.data();
+}
+
+// afcore 5.1 (Apple): the screen as an IOSurface-backed BGRA pixel buffer,
+// no copy to the CPU (attract::metal::Surface); NULL in the OpenGL build.
+void *ScreenSurface(afcore *c, int *width, int *height)
+{
+#ifdef M3CORE_METAL
+  if (c->metal)
+    return attract::metal::Surface(*c->metal, width, height);
+#else
+  (void)c, (void)width, (void)height;
+#endif
+  return nullptr;
 }
 
 double AudioRate(afcore *, int stream)
@@ -1017,6 +1044,37 @@ const uint32_t *HudScreen(afcore *c, int *width, int *height)
   return c->hud.empty() ? nullptr : c->hud.data();
 }
 
+int CheckRoms(const char *romPath, char *report, size_t reportSize)
+{
+  std::lock_guard<std::recursive_mutex> hold(s_coreLock);
+  if (s_core)
+  {
+    SetErr(report, reportSize, "a game is running; checked when it ends");
+    return -1;
+  }
+  auto logger = std::make_shared<CoreLogger>();
+  SetLogger(logger);
+  // Reads every file of the set and checks its size and CRC, as Create does
+  GameLoader loader(g_attract_games_xml, GameLoader::FromText{});
+  loader.SetPreferredGame(M3_STR(M3CORE_ROMSET));
+  Game game;
+  ROMSet romSet;
+  const bool failed = loader.Load(&game, &romSet, romPath ? romPath : "");
+  SetLogger(nullptr);
+  if (failed)
+  {
+    SetErr(report, reportSize, logger->lastError.empty() ? std::string("cannot load ") + (romPath ? romPath : "") : logger->lastError);
+    return 0;
+  }
+  if (game.name != M3_STR(M3CORE_ROMSET))
+  {
+    SetErr(report, reportSize, "this is the " M3_STR(M3CORE_ROMSET) " core; the ROM set is " + game.name);
+    return 0;
+  }
+  SetErr(report, reportSize, "");
+  return 1;
+}
+
 }  // namespace
 
 extern "C" AFCORE_EXPORT const afcore_api *M3_CAT(afcore_api_, M3CORE_ROMSET)(void)
@@ -1044,6 +1102,8 @@ extern "C" AFCORE_EXPORT const afcore_api *M3_CAT(afcore_api_, M3CORE_ROMSET)(vo
     EyeScreen,
     HudScreen,
     kStereoScale,
+    ScreenSurface,
+    CheckRoms,
   };
   return &api;
 }

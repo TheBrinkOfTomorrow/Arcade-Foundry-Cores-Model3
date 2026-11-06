@@ -1,7 +1,7 @@
 # Arcade Foundry Cores: Sega Model 3
 
 Sega Model 3 arcade games as libraries for Arcade Foundry: Insert Coin, one
-game per build, behind the same C interface (`Core/include/afcore.h`) as the
+game per build, behind the same C interface (`common/include/afcore.h`) as the
 Model 1 and Model 2 cores. The cores run on macOS, iOS, iPadOS and tvOS
 (Metal) and on Linux (OpenGL). No ROMs are included; you supply your own.
 

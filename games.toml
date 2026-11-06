@@ -1,0 +1,207 @@
+# The games this core builds, one [[game]] per MAME ROM set. scripts/gen_games.py
+# writes the files that list them from this one (CI checks they match), and the
+# app's scripts/gen_games.py reads it for the app's catalog. The keys are in
+# common/tools/games/afgames.py (CORE_KEYS, BOARDS, CONTROLS).
+
+[[game]]
+set = "vf3"
+title = "Virtua Fighter 3"
+year = 1996
+board = "model3"
+core_version = "1.0.0"
+controls = "fighting"
+players = 2
+
+[[game]]
+set = "scud"
+title = "Scud Race"
+year = 1996
+board = "model3"
+core_version = "1.0.0"
+
+[[game]]
+set = "scudplus"
+title = "Scud Race"
+year = 1997
+board = "model3"
+version = "Scud Race Plus"
+core_version = "1.0.0"
+build = { title = "Scud Race Plus" }
+
+[[game]]
+set = "daytona2"
+title = "Daytona USA 2"
+year = 1998
+board = "model3"
+version = "Battle on the Edge"
+core_version = "1.0.0"
+
+[[game]]
+set = "dayto2pe"
+title = "Daytona USA 2"
+year = 1998
+board = "model3"
+version = "Power Edition"
+core_version = "1.0.0"
+build = { title = "Daytona USA 2 Power Edition" }
+
+[[game]]
+set = "srally2"
+title = "Sega Rally 2"
+year = 1998
+board = "model3"
+core_version = "1.0.0"
+
+[[game]]
+set = "lemans24"
+title = "Le Mans 24"
+year = 1997
+board = "model3"
+core_version = "1.0.0"
+
+[[game]]
+set = "dirtdvls"
+title = "Dirt Devils"
+year = 1998
+board = "model3"
+core_version = "1.0.0"
+
+[[game]]
+set = "harley"
+title = "Harley-Davidson & L.A. Riders"
+year = 1997
+board = "model3"
+core_version = "1.0.0"
+build = { title = "Harley-Davidson and L.A. Riders" }
+
+[[game]]
+set = "ecau"
+title = "Emergency Call Ambulance"
+year = 1999
+board = "model3"
+core_version = "1.0.0"
+
+[[game]]
+set = "fvipers2"
+title = "Fighting Vipers 2"
+year = 1998
+board = "model3"
+core_version = "1.0.0"
+controls = "fighting"
+players = 2
+
+[[game]]
+set = "von2"
+title = "Cyber Troopers Virtual-On Oratorio Tangram"
+year = 1998
+board = "model3"
+core_version = "1.0.0"
+controls = "twin"
+build = { title = "Virtual-On Oratorio Tangram" }
+
+[[game]]
+set = "spikeout"
+title = "Spikeout"
+year = 1998
+board = "model3"
+core_version = "1.0.0"
+controls = "fighting"
+
+[[game]]
+set = "spikeofe"
+title = "Spikeout"
+year = 1999
+board = "model3"
+version = "Final Edition"
+core_version = "1.0.0"
+controls = "fighting"
+build = { title = "Spikeout Final Edition" }
+
+[[game]]
+set = "vs299a"
+title = "Virtua Striker 2 '99"
+year = 1999
+board = "model3"
+core_version = "1.0.0"
+controls = "fighting"
+players = 2
+
+[[game]]
+set = "swtrilgy"
+title = "Star Wars Trilogy Arcade"
+year = 1998
+board = "model3"
+core_version = "1.0.0"
+controls = "flight"
+
+[[game]]
+set = "lostwsga"
+title = "The Lost World"
+year = 1997
+board = "model3"
+core_version = "1.0.0"
+controls = "analog-gun"
+
+[[game]]
+set = "lamachin"
+title = "L.A. Machineguns"
+year = 1998
+board = "model3"
+core_version = "1.0.0"
+controls = "analog-gun"
+
+[[game]]
+set = "oceanhuna"
+title = "The Ocean Hunter"
+year = 1998
+board = "model3"
+core_version = "1.0.0"
+controls = "analog-gun"
+
+[[game]]
+set = "magtruck"
+title = "Magical Truck Adventure"
+year = 1998
+board = "model3"
+version = "Japan"
+core_version = "1.0.0"
+controls = "fighting"
+players = 2
+
+[[game]]
+set = "bassdx"
+title = "Sega Bass Fishing"
+year = 1998
+board = "model3"
+version = "Deluxe, USA"
+core_version = "1.0.0"
+controls = "fishing"
+
+[[game]]
+set = "getbass"
+title = "Get Bass"
+year = 1998
+board = "model3"
+version = "Japan, Standard"
+core_version = "1.0.0"
+controls = "fishing"
+
+[[game]]
+set = "getbassur"
+title = "Get Bass"
+year = 1998
+board = "model3"
+version = "Japan, Upright"
+core_version = "1.0.0"
+controls = "fishing"
+
+[[game]]
+set = "getbassdx"
+title = "Get Bass"
+year = 1998
+board = "model3"
+version = "Japan, Deluxe"
+core_version = "1.0.0"
+controls = "fishing"
+devices = ["bassdx"]
+rom_notes = "Needs `bassdx.zip` beside it"

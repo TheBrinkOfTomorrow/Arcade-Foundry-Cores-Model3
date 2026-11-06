@@ -1,5 +1,5 @@
 # Arcade Foundry Model 3 cores: Supermodel's machine as a library, one game per
-# build, behind the afcore C interface (Core/include/afcore.h).
+# build, behind the afcore C interface (common/include/afcore.h).
 #
 #   cmake -B build -DM3CORE_ROMSET=vf3 && cmake --build build
 #
@@ -9,6 +9,13 @@
 # which is the reference the cores are checked against.
 cmake_minimum_required(VERSION 3.20)
 project(ArcadeFoundryCoresModel3 C CXX)
+
+# The core interface header, shared with the other core repos (submodule
+# common/, Arcade-Foundry-Cores-Common, BSD-3-Clause).
+set(AFCORE_INCLUDE ${CMAKE_SOURCE_DIR}/common/include)
+if(NOT EXISTS ${AFCORE_INCLUDE}/afcore.h)
+  message(FATAL_ERROR "common/ is empty: run git submodule update --init")
+endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -43,11 +50,12 @@ if(M3CORE_METAL)
   enable_language(OBJCXX)
 endif()
 
+# GAMES:BEGIN titles (Scripts/gen_games.py writes these from games.toml)
 set(M3_TITLES_vf3 "Virtua Fighter 3")
 set(M3_TITLES_scud "Scud Race")
+set(M3_TITLES_scudplus "Scud Race Plus")
 set(M3_TITLES_daytona2 "Daytona USA 2")
 set(M3_TITLES_dayto2pe "Daytona USA 2 Power Edition")
-set(M3_TITLES_scudplus "Scud Race Plus")
 set(M3_TITLES_srally2 "Sega Rally 2")
 set(M3_TITLES_lemans24 "Le Mans 24")
 set(M3_TITLES_dirtdvls "Dirt Devils")
@@ -67,6 +75,7 @@ set(M3_TITLES_bassdx "Sega Bass Fishing")
 set(M3_TITLES_getbass "Get Bass")
 set(M3_TITLES_getbassur "Get Bass")
 set(M3_TITLES_getbassdx "Get Bass")
+# GAMES:END titles
 if(NOT M3CORE_TITLE)
   set(M3CORE_TITLE "${M3_TITLES_${M3CORE_ROMSET}}")
   if(NOT M3CORE_TITLE)
@@ -186,7 +195,7 @@ endif()
 # Every directory a Supermodel source sits in is on the include path, as in
 # its Makefiles.
 set(SUPERMODEL_INCLUDES ${S} ${S}/OSD/SDL ${S}/Pkgs ${S}/CPU/68K/Musashi ${MUSASHI_GEN}
-    ${CMAKE_SOURCE_DIR}/Core/include ${CMAKE_SOURCE_DIR}/Core/src)
+    ${AFCORE_INCLUDE} ${CMAKE_SOURCE_DIR}/Core/src)
 foreach(f ${SUPERMODEL_SOURCES})
   get_filename_component(d ${f} DIRECTORY)
   list(APPEND SUPERMODEL_INCLUDES ${d})
@@ -228,7 +237,7 @@ endif()
 target_link_libraries(${CORE_TARGET} PRIVATE ZLIB::ZLIB)
 if(M3CORE_METAL)
   target_compile_definitions(${CORE_TARGET} PRIVATE M3CORE_METAL SUPERMODEL_NO_OPENGL)
-  target_link_libraries(${CORE_TARGET} PRIVATE "-framework Metal" "-framework Foundation")
+  target_link_libraries(${CORE_TARGET} PRIVATE "-framework Metal" "-framework CoreVideo" "-framework Foundation")
 elseif(APPLE)
   target_link_libraries(${CORE_TARGET} PRIVATE OpenGL::GL)
 else()
@@ -249,6 +258,6 @@ endif()
 # m3run: runs a core for a number of frames, with an input script, and writes
 # screens and sound for comparison.
 add_executable(m3run ${CMAKE_SOURCE_DIR}/Core/tools/m3run.cpp)
-target_include_directories(m3run PRIVATE ${CMAKE_SOURCE_DIR}/Core/include)
+target_include_directories(m3run PRIVATE ${AFCORE_INCLUDE})
 target_compile_definitions(m3run PRIVATE M3CORE_ROMSET=${M3CORE_ROMSET})
 target_link_libraries(m3run PRIVATE ${CORE_TARGET} ZLIB::ZLIB)

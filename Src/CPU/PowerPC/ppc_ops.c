@@ -335,7 +335,7 @@ static inline void ppc_skip_wait_loop(UINT32 op)
 {
 	if (ppc_skip_mask < 0)
 	{
-		const char *e = getenv("PPC_SKIP");
+		const char *e = af_debug_env("PPC_SKIP");
 		ppc_skip_mask = e ? atoi(e) : 15;
 	}
 	UINT32 head = ppc.npc;
