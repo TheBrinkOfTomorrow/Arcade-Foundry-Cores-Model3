@@ -1882,6 +1882,11 @@ void CModel3::SaveState(CBlockFile *SaveState)
   BillBoard->SaveState(SaveState);
   m_cryptoDevice.SaveState(SaveState);
   m_jtag.SaveState(SaveState);
+  // Arcade Foundry save states: whether the GPUs have a frame to show (set
+  // by the first frame), so a board loaded into a fresh core runs its next
+  // frame's vblank as the saved one would have
+  SaveState->NewBlock("Model 3 AF", __FILE__);
+  SaveState->Write(gpusReady);
 }
 
 void CModel3::LoadState(CBlockFile *SaveState)
@@ -1922,6 +1927,8 @@ void CModel3::LoadState(CBlockFile *SaveState)
   BillBoard->LoadState(SaveState);
   m_cryptoDevice.LoadState(SaveState);
   m_jtag.LoadState(SaveState);
+  if (Result::OKAY == SaveState->FindBlock("Model 3 AF"))  // Arcade Foundry's states
+    SaveState->Read(&gpusReady);
 }
 
 void CModel3::SaveNVRAM(CBlockFile *NVRAM)
@@ -3300,6 +3307,21 @@ CDriveBoard *CModel3::GetDriveBoard(void)
 CBillBoard *CModel3::GetBillBoard(void)
 {
   return BillBoard;
+}
+
+Result CModel3::AttachNetwork(std::shared_ptr<CNetServer> server)
+{
+  m_server = std::move(server);
+  delete NetBoard;
+  if (m_config["SimulateNet"].ValueAs<bool>())
+    NetBoard = new CSimNetBoard(m_config, m_server);
+  else
+    NetBoard = new CNetBoard(m_config, m_server);
+  NetBoard->GetGame(m_game);
+  if (Result::OKAY != NetBoard->Init(netRAM, netBuffer))
+    return Result::FAIL;
+  m_runNetBoard = m_game.stepping != Game::Stepping::MODEL3_1_0 && NetBoard->IsAttached();
+  return Result::OKAY;
 }
 
 INetBoard *CModel3::GetNetBoard(void)

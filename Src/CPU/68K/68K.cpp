@@ -34,6 +34,8 @@
  */
 
 #include "68K.h"
+#include <cstddef>
+#include <string>
 
 #include "Supermodel.h"
 #include "Musashi/m68k.h"	// Musashi 68K core
@@ -170,6 +172,12 @@ void M68KSaveState(CBlockFile *StateFile, const char *name)
 	data[33] = m68k_get_reg(NULL, M68K_REG_IR);
 
 	StateFile->Write(data, sizeof(data));
+
+	// Arcade Foundry save states: the whole context up to the cycle tables
+	// and callbacks (pointers, which differ between runs), so the flags,
+	// interrupt mask and modes come back exactly as they were.
+	StateFile->NewBlock(std::string(name) + " AF", __FILE__);
+	StateFile->Write(&Ctx, (UINT32)offsetof(m68ki_cpu_core, cyc_instruction));
 }
 
 void M68KLoadState(CBlockFile *StateFile, const char *name)
@@ -222,6 +230,13 @@ void M68KLoadState(CBlockFile *StateFile, const char *name)
 	m68k_set_reg(M68K_REG_PREF_DATA, data[31]);
 	m68k_set_reg(M68K_REG_PPC, data[32]);
 	m68k_set_reg(M68K_REG_IR, data[33]);
+
+	if (Result::OKAY == StateFile->FindBlock(std::string(name) + " AF"))  // Arcade Foundry's states
+	{
+		m68k_get_context(&Ctx);
+		StateFile->Read(&Ctx, (UINT32)offsetof(m68ki_cpu_core, cyc_instruction));
+		m68k_set_context(&Ctx);
+	}
 }
 
 // Emulation functions

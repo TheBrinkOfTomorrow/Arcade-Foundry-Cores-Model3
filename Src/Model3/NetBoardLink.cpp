@@ -95,7 +95,14 @@ bool CNetBoardLink::LinkBroken(void) const
 std::vector<uint8_t> &CNetBoardLink::Receive(void)
 {
   std::unique_lock<std::mutex> lock(m_mutex);
-  m_condition.wait(lock, [this] { return !m_queue.empty() || LinkBroken(); });
+  // Arcade Foundry: a cabinet that stops sending (paused, gone to sleep,
+  // unplugged) would hold this one forever; after the timeout the block
+  // comes back empty, which the net boards take as a broken link.
+  auto ready = [this] { return !m_queue.empty() || LinkBroken(); };
+  if (m_timeoutMs == 0)
+    m_condition.wait(lock, ready);
+  else if (!m_condition.wait_for(lock, std::chrono::milliseconds(m_timeoutMs), ready))
+    m_timedOut = true;
   if (m_queue.empty())
     m_received.clear();
   else
@@ -104,6 +111,18 @@ std::vector<uint8_t> &CNetBoardLink::Receive(void)
     m_queue.pop_front();
   }
   return m_received;
+}
+
+void CNetBoardLink::SetReceiveTimeout(unsigned milliseconds)
+{
+  std::lock_guard<std::mutex> lock(m_mutex);
+  m_timeoutMs = milliseconds;
+}
+
+bool CNetBoardLink::TimedOut(void)
+{
+  std::lock_guard<std::mutex> lock(m_mutex);
+  return m_timedOut;
 }
 
 bool CNetBoardLink::CheckDataAvailable(void)

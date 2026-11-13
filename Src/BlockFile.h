@@ -30,6 +30,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 #include <type_traits>
 #include "Types.h"
 
@@ -223,6 +224,18 @@ public:
   Result Load(const std::string &file);
 
   /*
+   * CreateInMemory(headerName, comment), LoadFromMemory(data, size),
+   * Memory():
+   *
+   * The same as Create and Load, kept in memory instead of a file (Arcade
+   * Foundry's save states, which the front end writes where it wants).
+   * Memory() is what was written, until Close.
+   */
+  Result CreateInMemory(const std::string &headerName, const std::string &comment);
+  Result LoadFromMemory(const void *data, size_t size);
+  const std::vector<uint8_t> &Memory(void) const { return mem; }
+
+  /*
    * Close(void):
    *
    * Closes the file.
@@ -249,8 +262,18 @@ private:
   void      WriteBytes(const void *data, uint32_t numBytes);
   void      WriteBlockHeader(const std::string &name, const std::string &comment);
 
+  // The file, or the memory (inMemory): every access goes through these
+  bool      IsOpen(void) const { return fp != nullptr || inMemory; }
+  size_t    RawRead(void *data, size_t numBytes);
+  void      RawWrite(const void *data, size_t numBytes);
+  long int  Tell(void) const;
+  void      Seek(long int pos);
+
   // File state data
   FILE      *fp;
+  bool      inMemory = false;
+  std::vector<uint8_t> mem;
+  size_t    memPos = 0;
   int       mode;           // 'r' for read, 'w' for write
   long int  fileSize;       // size of file in bytes
   long int  blockStartPos;  // points to beginning of current block (or file) header

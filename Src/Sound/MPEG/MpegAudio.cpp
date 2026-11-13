@@ -22,6 +22,7 @@
 #define MINIMP3_IMPLEMENTATION
 #include "Pkgs/minimp3.h"
 #include "MpegAudio.h"
+#include "BlockFile.h"
 #include "Util/ConfigBuilders.h"
 #include "OSD/Logger.h"
 
@@ -390,4 +391,44 @@ void MpegDec::DecodeAudio(int16_t* left, int16_t* right, int numStereoSamples)
 
 	}
 
+}
+
+
+// Arcade Foundry save states (see MpegAudio.h).
+void MpegDec::SaveDecoder(CBlockFile *file, const uint8_t *rom)
+{
+	int64_t offset = -1;  // no buffer
+	if (dec.custom_mpeg_data)
+		offset = -2;      // a custom track: not saved
+	else if (dec.buffer)
+		offset = (int64_t)(dec.buffer - rom);
+	file->Write(&offset, sizeof(offset));
+	file->Write(&dec.mp3d, sizeof(dec.mp3d));
+	file->Write(&dec.info, sizeof(dec.info));
+	int32_t ints[4] = {dec.size, dec.pos, dec.numSamples, dec.pcmPos};
+	file->Write(ints, sizeof(ints));
+	uint8_t flags[2] = {(uint8_t)dec.loop, (uint8_t)dec.stopped};
+	file->Write(flags, sizeof(flags));
+	file->Write(dec.pcm, sizeof(dec.pcm));
+}
+
+bool MpegDec::LoadDecoder(CBlockFile *file, const uint8_t *rom)
+{
+	int64_t offset = 0;
+	Decoder d{};
+	int32_t ints[4] = {};
+	uint8_t flags[2] = {};
+	file->Read(&offset, sizeof(offset));
+	file->Read(&d.mp3d, sizeof(d.mp3d));
+	file->Read(&d.info, sizeof(d.info));
+	file->Read(ints, sizeof(ints));
+	file->Read(flags, sizeof(flags));
+	file->Read(d.pcm, sizeof(d.pcm));
+	if (offset == -2)
+		return false;
+	d.buffer = offset >= 0 ? rom + offset : nullptr;
+	d.size = ints[0], d.pos = ints[1], d.numSamples = ints[2], d.pcmPos = ints[3];
+	d.loop = flags[0] != 0, d.stopped = flags[1] != 0;
+	dec = d;
+	return true;
 }

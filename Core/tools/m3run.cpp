@@ -2,7 +2,8 @@
 //
 //   m3run ROMSET.zip FRAMES [--inputs SCRIPT] [--crc FILE] [--shot N,N,... --shot-dir DIR]
 //         [--wav FILE] [--save DIR] [--stereo N,N,...] [--head N,N,...]
-//         [--ipd M] [--scale M] [--yaw DEG]
+//         [--ipd M] [--scale M] [--yaw DEG] [--link-listen PORT --link-next HOST:PORT]
+//         [--from-link 1] [--save-state-at N --state FILE] [--load-state FILE]
 //
 // --crc writes "frame crc32" for every screen (0xAARRGGBB words); --shot
 // writes those frames as binary PPM; --wav the sound (44.1 kHz stereo,
@@ -11,13 +12,30 @@
 // service, and punch kick guard escape up down left right (a 2 suffix is
 // player 2).
 //
+// --link-listen/--link-next: link play (afcore link_start): listen for the
+// cabinet before this one, connect to the next. Which cabinet this is comes
+// from the game's settings in --save. The link's state is printed when it
+// changes and at the end. --from-link 1: the input script, --shot, --crc
+// and FRAMES count from the frame after the link comes up, and no inputs go
+// in before it. Cabinets started a few seconds apart come up at different
+// frames of their own and then stay that far apart in lockstep, so a script
+// in absolute frames presses each cabinet's buttons at a different moment
+// of the linked game.
+//
 // --stereo writes those frames' two eyes (render_eyes, AFCORE_STEREO_PAIR,
 // --ipd apart) side by side as frame_N_pair.ppm; --head both eyes of a
 // headset-like view (AFCORE_STEREO_HEAD, 512 x 512 an eye, 90 degrees, the
 // head turned --yaw degrees left, default 20) as frame_N_head.ppm, drawn for
 // the 60 frames before too, as a headset front end would (the core opens
 // its frustum). --scale: metres per game unit (0: the core's).
+//
+// --save-state-at N --state FILE: after frame N, write a save state
+// (afcore save_state) to FILE and carry on. --load-state FILE: load it before
+// the first frame; frames (the script, --crc, --shot) then count on from the
+// state's frame, so a run from the state and the run that saved it can be
+// compared frame by frame (Core/tests/save_state_check.sh).
 #include "afcore.h"
+#include "afcommon/state.h"
 
 #include <zlib.h>
 
@@ -212,7 +230,11 @@ int main(int argc, char **argv)
   }
   std::string rom = argv[1];
   unsigned long frames = std::stoul(argv[2]);
-  std::string script, crcPath, shotDir = ".", wavPath, saveDir;
+  std::string script, crcPath, shotDir = ".", wavPath, saveDir, linkNext;
+  int linkListen = 0;
+  bool fromLink = false;
+  std::string statePath, loadPath;
+  long saveAt = -1;
   std::set<unsigned long> shots, pairShots, headShots;
   float ipd = 0, scale = 0, yaw = 20;
   for (int i = 3; i + 1 < argc; i += 2)
@@ -229,6 +251,12 @@ int main(int argc, char **argv)
     else if (a == "--ipd") ipd = std::stof(v);
     else if (a == "--scale") scale = std::stof(v);
     else if (a == "--yaw") yaw = std::stof(v);
+    else if (a == "--link-listen") linkListen = std::stoi(v);
+    else if (a == "--link-next") linkNext = v;
+    else if (a == "--from-link") fromLink = (v != "0");
+    else if (a == "--save-state-at") saveAt = std::stol(v);
+    else if (a == "--state") statePath = v;
+    else if (a == "--load-state") loadPath = v;
     else
     {
       fprintf(stderr, "m3run: unknown option %s\n", a.c_str());
@@ -255,6 +283,43 @@ int main(int argc, char **argv)
     fprintf(stderr, "m3run: %s\n", err);
     return 1;
   }
+  if (fromLink && linkListen <= 0)
+  {
+    fprintf(stderr, "m3run: --from-link needs --link-listen\n");
+    return 2;
+  }
+  if (linkListen > 0 || !linkNext.empty())
+  {
+    if (api->link_start(core, linkListen, linkNext.c_str(), 1, err, sizeof(err)) != 0)
+    {
+      fprintf(stderr, "m3run: link: %s\n", err);
+      api->destroy(core);
+      return 1;
+    }
+  }
+  if (saveAt >= 0 && (statePath.empty() || !api->save_state))
+  {
+    fprintf(stderr, "m3run: --save-state-at needs --state and a core with save states\n");
+    return 2;
+  }
+  unsigned long offset = 0;  // the frame the loaded state was saved after
+  if (!loadPath.empty())
+  {
+    std::ifstream f(loadPath, std::ios::binary);
+    std::vector<char> bytes((std::istreambuf_iterator<char>(f)), std::istreambuf_iterator<char>());
+    afc_state_info info;
+    if (!api->load_state || afc_state_info_read(bytes.data(), bytes.size(), &info, err, sizeof(err)) != 0 ||
+        api->load_state(core, bytes.data(), bytes.size(), err, sizeof(err)) != 0)
+    {
+      fprintf(stderr, "m3run: --load-state %s: %s\n", loadPath.c_str(), api->load_state ? err : "the core has no save states");
+      api->destroy(core);
+      return 1;
+    }
+    offset = (unsigned long)info.frame;
+    fprintf(stderr, "m3run: loaded %s (frame %lu)\n", loadPath.c_str(), offset);
+  }
+  static const char *const kLinkStates[] = {"off", "looking for the other cabinets", "up", "lost"};
+  int lastLink = -1;
   FILE *crc = crcPath.empty() ? nullptr : fopen(crcPath.c_str(), "w");
   FILE *wav = wavPath.empty() ? nullptr : fopen(wavPath.c_str(), "wb");
   uint32_t wavFrames = 0;
@@ -284,27 +349,71 @@ int main(int argc, char **argv)
   }
 
   auto t0 = std::chrono::steady_clock::now();
-  for (unsigned long f = 0; f < frames; f++)
+  // With --from-link, frames before the link is up don't count; give up if
+  // it isn't up within 10 minutes of game time.
+  const unsigned long kMaxWait = 36000;
+  bool counting = !fromLink;
+  unsigned long base = 0, ran = 0;
+  for (unsigned long f = 0; counting ? f - base < frames : f < kMaxWait; f++, ran++)
   {
-    afcore_input in = InputAt(lines, f);
+    afcore_input in{};
+    in.size = sizeof(in);
+    if (counting)
+      in = InputAt(lines, offset + f - base);
     api->run_frame(core, &in);
     if (const char *e = api->error(core))
     {
       fprintf(stderr, "m3run: frame %lu: %s\n", f, e);
       break;
     }
+    if (linkListen > 0)
+    {
+      int id = 0, count = 0, state = api->link_state(core, &id, &count);
+      if (state != lastLink)
+      {
+        if (state == AFCORE_LINK_UP)
+        {
+          fprintf(stderr, "m3run: frame %lu: link up, cabinet %d of %d\n", f, id, count);
+          if (!counting)
+          {
+            counting = true;
+            base = f + 1;
+            fprintf(stderr, "m3run: frames from here count from 0 (--from-link)\n");
+          }
+        }
+        else
+          fprintf(stderr, "m3run: frame %lu: link %s\n", f, kLinkStates[state & 3]);
+        lastLink = state;
+      }
+    }
     int w, h;
     const uint32_t *px = api->screen(core, &w, &h);
-    if (crc)
-      fprintf(crc, "%lu %08lx\n", f, crc32(0, reinterpret_cast<const Bytef *>(px), uInt(w * h * 4)));
-    if (shots.count(f))
-      WritePpm(shotDir + "/frame_" + std::to_string(f) + ".ppm", px, w, h);
-    if (pairShots.count(f))
-      WriteEyes(api, core, pair, shotDir + "/frame_" + std::to_string(f) + "_pair.ppm");
-    if (headShots.count(f))
-      WriteEyes(api, core, head, shotDir + "/frame_" + std::to_string(f) + "_head.ppm");
-    else if (api->render_eyes && headShots.lower_bound(f) != headShots.end() && *headShots.lower_bound(f) - f <= 60)
-      api->render_eyes(core, &head);
+    if (counting && f >= base)
+    {
+      const unsigned long g = offset + f - base;  // the frame as the script and shots count it
+      if (crc)
+        fprintf(crc, "%lu %08lx\n", g, crc32(0, reinterpret_cast<const Bytef *>(px), uInt(w * h * 4)));
+      if (shots.count(g))
+        WritePpm(shotDir + "/frame_" + std::to_string(g) + ".ppm", px, w, h);
+      if (pairShots.count(g))
+        WriteEyes(api, core, pair, shotDir + "/frame_" + std::to_string(g) + "_pair.ppm");
+      if (headShots.count(g))
+        WriteEyes(api, core, head, shotDir + "/frame_" + std::to_string(g) + "_head.ppm");
+      else if (api->render_eyes && headShots.lower_bound(g) != headShots.end() && *headShots.lower_bound(g) - g <= 60)
+        api->render_eyes(core, &head);
+      if (saveAt >= 0 && g == (unsigned long)saveAt)
+      {
+        std::vector<char> state(api->state_size(core));
+        size_t n = api->save_state(core, state.data(), state.size(), err, sizeof(err));
+        if (!n)
+          fprintf(stderr, "m3run: frame %lu: save state: %s\n", g, err);
+        else
+        {
+          std::ofstream(statePath, std::ios::binary).write(state.data(), std::streamsize(n));
+          fprintf(stderr, "m3run: frame %lu: saved %s (%zu bytes)\n", g, statePath.c_str(), n);
+        }
+      }
+    }
     size_t n;
     while ((n = api->audio_read(core, 0, audio.data(), audio.size() / 2)) > 0)
     {
@@ -320,7 +429,9 @@ int main(int argc, char **argv)
     }
   }
   double secs = std::chrono::duration<double>(std::chrono::steady_clock::now() - t0).count();
-  fprintf(stderr, "m3run: %lu frames in %.1f s (%.1f frames/s)\n", frames, secs, frames / secs);
+  if (fromLink && !counting)
+    fprintf(stderr, "m3run: --from-link: the link did not come up in %lu frames\n", kMaxWait);
+  fprintf(stderr, "m3run: %lu frames in %.1f s (%.1f frames/s)\n", ran, secs, ran / secs);
   if (crc)
     fclose(crc);
   if (wav)

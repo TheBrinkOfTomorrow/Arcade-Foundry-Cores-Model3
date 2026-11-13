@@ -2,6 +2,35 @@
 
 Newest first. Each release is also on the repository's Releases page.
 
+## 1.3.0 (2026-11-12)
+
+**Arcade Foundry Cores: Model 3 1.3.0**
+
+The Model 3 cores as shipped with Insert Coin 1.3.0.
+
+- Save states: every game can save the whole board and load it back
+  (afcore 5.4), and a loaded game carries on exactly as it would have:
+  same pictures, same sound. Supermodel's own save state left out a few
+  things (the first frame's vblank in a fresh core, the music decoder's
+  state, some CPU timing), now saved too. Core version up a minor version
+  for every game.
+
+- Link play: the games with a network board (Daytona USA 2, Scud Race, Sega
+  Rally 2 and the other net board games) can link cabinets over the network,
+  with the same protocol as Supermodel, so a core can also link with
+  Supermodel. A cabinet that stops answering for 3 seconds breaks the link
+  instead of freezing the others. Core version 1.1.0 for those games.
+- Dirt Devils links 3 or 4 cabinets: with more than two, the other cabinets'
+  data was in the opposite order to what the game expects, so the slaves
+  stayed on the grid. Core version 1.1.1.
+- Le Mans 24 starts in the Export country on a new save: English attract
+  and no Japan-only warning. The game's hidden country screen (test menu:
+  Start, Start, Service, Service, Start, Test) still changes it. Core
+  version 1.1.1.
+- **Game categories:** the app's library groups games by category, taken
+  from each game's controls; games.toml sets one by hand where the controls
+  give the wrong answer.
+
 ## 1.2.0 (2026-11-06)
 
 **Arcade Foundry Cores: Model 3 1.2.0**

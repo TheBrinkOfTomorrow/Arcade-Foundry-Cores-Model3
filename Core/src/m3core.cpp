@@ -17,12 +17,15 @@
  */
 #include "af_debug.h"
 #include "afcore.h"
+#include "afcommon/state.h"
 #include "core_versions.h"
 
 #include "Supermodel.h"
 #include "GameLoader.h"
 #include "BlockFile.h"
 #include "Model3/Model3.h"
+#include "Model3/SimNetBoard.h"
+#include "Network/NetServer.h"
 #include "Inputs/Inputs.h"
 #include "Graphics/New3D/New3D.h"
 #include "Model3/TileGenBuffer.h"
@@ -168,8 +171,11 @@ struct afcore
   AudioQueue audio;
   std::string error;
   bool firstBoot = false;  // no save: the first-boot settings are still to make
+  std::shared_ptr<CNetServer> netServer;  // link play (LinkStart)
   unsigned long frame = 0;
   time_t rtcStart = 0;
+  std::vector<uint8_t> state;      // StateSize's serialization, for SaveState at the same frame
+  unsigned long stateFrame = ~0ul;
 
   // stereo (render_eyes)
   std::vector<uint32_t> eye[2];
@@ -361,9 +367,9 @@ bool LoadNvram(afcore *c)
   return true;
 }
 
-uint16_t Crc16Xmodem(const uint16_t *words, size_t n)
+uint16_t Crc16Xmodem(const uint16_t *words, size_t n, uint16_t init = 0)
 {
-  uint16_t crc = 0;
+  uint16_t crc = init;
   for (size_t i = 0; i < n; i++)
     for (int byte = 1; byte >= 0; byte--)
     {
@@ -382,13 +388,44 @@ uint16_t Crc16Xmodem(const uint16_t *words, size_t n)
 //
 // Scud Race and Daytona USA 2 (AM2's racing games): words 0-2 "M3SEGA",
 // word 3 a CRC-16/XMODEM of the settings (words 6-34, high byte first), and
-// words 35-63 a copy of them. Link ID is word 6's low byte (Scud: 1 master,
-// 0 slave, 2 single; Daytona 2 adds "live", but single is 2 there too);
-// going to single in test mode also clears word 15's high byte.
+// words 35-63 a copy of them. Word 15 is the link setting: high byte LINK ID
+// (0 single, 1 master, 2 slave), low byte the car number from 0. Word 6
+// counts test-mode saves (1 after the first boot, 2 after one save). Checked
+// on a Mac, 2026-11-09, by saving each setting in test mode.
+//
+// Le Mans 24 (the Japanese set, the only one) starts in COUNTRY JAPAN, which
+// its test mode only changes on a hidden screen (test menu: Start, Start,
+// Service, Service, Start, Test). A new save starts in EXPORT instead
+// (2026-11-10): English attract, no Japan-only warning. Words 4-5
+// a319 015f; word 12 high byte the country (0 Japan, 1 USA, 2 Export, 3
+// Australia), low byte COMMUNICATION MODE; word 3 a CRC-16 (0x1021, MSB
+// first, initial value 0x1247) of words 4-33; word 6 counts saves (1 after
+// the first boot). No copy. Checked on a Mac, 2026-11-10.
+bool LeMansFirstBoot(afcore *c)
+{
+  uint16_t *e = c->model3->EEPROMData();
+  if (e[0] != 0x4d33 || e[1] != 0x5345 || e[2] != 0x4741 || e[4] != 0xa319 || e[5] != 0x015f ||
+      Crc16Xmodem(e + 4, 30, 0x1247) != e[3])
+    return false;  // not written yet
+  if (e[6] == 1 && (e[12] >> 8) == 0)  // the game's own first-boot settings, Japan
+  {
+    e[12] = uint16_t((e[12] & 0x00ff) | 0x0200);
+    e[3] = Crc16Xmodem(e + 4, 30, 0x1247);
+    c->model3->Reset();
+  }
+  return true;
+}
+
 void FirstBootSettings(afcore *c)
 {
   const std::string &name = c->game.parent.empty() ? c->game.name : c->game.parent;
-  if ((name != "scud" && name != "daytona2") || c->frame > 600)
+  if (name == "lemans24")
+  {
+    if (c->frame > 3000 || LeMansFirstBoot(c))
+      c->firstBoot = false;
+    return;
+  }
+  if ((name != "scud" && name != "daytona2") || c->frame > 600 || c->netServer)
   {
     c->firstBoot = false;
     return;
@@ -398,9 +435,9 @@ void FirstBootSettings(afcore *c)
       !std::equal(e + 6, e + 35, e + 35))
     return;  // not written yet
   c->firstBoot = false;
-  if ((e[6] & 0xff) == 2)
-    return;
-  e[6] = uint16_t((e[6] & 0xff00) | 2);
+  if ((e[15] >> 8) == 0)
+    return;  // already single
+  e[6] = uint16_t((e[6] & 0xff00) | 2);  // one test-mode save, as the operator's change gives
   e[15] &= 0x00ff;
   std::copy(e + 6, e + 35, e + 35);
   e[3] = Crc16Xmodem(e + 6, 29);
@@ -829,19 +866,244 @@ void Save(afcore *c)
   SaveNvram(c);
 }
 
-int LinkStart(afcore *, int, const char *, int, char *err, size_t errSize)
+// ---------------------------------------------------------------------------
+// Save states (afcore 5.4): Supermodel's own save state (CModel3::SaveState,
+// every device's state in a block file, as its F5 key writes) kept in
+// memory, in one "M3  " chunk, and the core's frame count in "AFM3". The
+// Real3D sends all texture memory to the renderer again as it loads.
+
+constexpr int32_t kStateFileVersion = 6;  // Supermodel's STATE_FILE_VERSION (OSD/SDL/Main.cpp)
+
+bool Linked(const afcore *c)
 {
-  SetErr(err, errSize, "link play is not in the Model 3 cores yet");
-  return -1;
+  return c->netServer != nullptr;
 }
 
-int LinkState(afcore *, int *id, int *count)
+std::vector<uint8_t> SerializeBoard(afcore *c)
+{
+  CBlockFile blocks;
+  blocks.CreateInMemory("Supermodel Save State", "Supermodel Version " SUPERMODEL_VERSION);
+  int32_t version = kStateFileVersion;
+  blocks.Write(&version, sizeof(version));
+  blocks.Write(c->game.name);
+  c->model3->SaveState(&blocks);
+  std::vector<uint8_t> out = blocks.Memory();
+  blocks.Close();
+  return out;
+}
+
+size_t WriteState(afcore *c, void *buf, size_t size)
+{
+  afc_state_writer w;
+  afc_state_begin(&w, buf, size, M3_STR(M3CORE_ROMSET), M3CORE_VERSION, c->frame);
+  afc_state_chunk(&w, "AFM3");
+  afc_state_put_u64(&w, c->frame);
+  afc_state_put_u64(&w, uint64_t(c->rtcStart));
+  afc_state_chunk(&w, "M3  ");
+  afc_state_put(&w, c->state.data(), c->state.size());
+  const size_t n = afc_state_end(&w);
+  return n ? n : w.need;
+}
+
+size_t StateSize(afcore *c)
+{
+  if (!c->error.empty() || Linked(c))
+    return 0;
+  c->state = SerializeBoard(c);
+  c->stateFrame = c->frame;
+  return WriteState(c, nullptr, 0);
+}
+
+size_t SaveState(afcore *c, void *buf, size_t size, char *err, size_t errSize)
+{
+  if (!c->error.empty())
+  {
+    SetErr(err, errSize, "the game has stopped");
+    return 0;
+  }
+  if (Linked(c))
+  {
+    SetErr(err, errSize, "no save states with link play");
+    return 0;
+  }
+  if (c->stateFrame != c->frame || c->state.empty())
+  {
+    c->state = SerializeBoard(c);
+    c->stateFrame = c->frame;
+  }
+  const size_t need = WriteState(c, nullptr, 0);
+  if (!buf || size < need)
+  {
+    SetErr(err, errSize, "the buffer is too small: call state_size again");
+    return 0;
+  }
+  const size_t n = WriteState(c, buf, size);
+  c->state.clear();
+  c->state.shrink_to_fit();
+  c->stateFrame = ~0ul;
+  return n;
+}
+
+// Puts the board's blocks back; false with the reason when Supermodel
+// reported a block missing.
+bool LoadBoard(afcore *c, const uint8_t *data, size_t size, std::string &why)
+{
+  CBlockFile blocks;
+  blocks.LoadFromMemory(data, size);
+  int32_t version = 0;
+  if (Result::OKAY != blocks.FindBlock("Supermodel Save State") || blocks.Read(&version, sizeof(version)) != sizeof(version) ||
+      version != kStateFileVersion)
+  {
+    why = "not a Model 3 save state of this version";
+    return false;
+  }
+  c->logger->lastError.clear();
+#ifndef M3CORE_METAL
+  attract::GLCurrent current(c->gl);  // the Real3D uploads its textures again
+#endif
+  c->model3->LoadState(&blocks);
+  if (!c->logger->lastError.empty())
+  {
+    why = c->logger->lastError;
+    return false;
+  }
+  return true;
+}
+
+int LoadState(afcore *c, const void *buf, size_t size, char *err, size_t errSize)
+{
+  if (!c->error.empty())
+  {
+    SetErr(err, errSize, "the game has stopped");
+    return -1;
+  }
+  if (Linked(c))
+  {
+    SetErr(err, errSize, "no save states with link play");
+    return -1;
+  }
+  afc_state_reader r;
+  if (afc_state_open(&r, buf, size, M3_STR(M3CORE_ROMSET), M3CORE_VERSION, err, errSize) != 0)
+    return -1;
+  uint64_t frame = 0, rtcStart = 0;
+  if (afc_state_find(&r, "AFM3") < 16 || afc_state_get_u64(&r, &frame) != 0 || afc_state_get_u64(&r, &rtcStart) != 0)
+  {
+    SetErr(err, errSize, "the save state has no frame count");
+    return -1;
+  }
+  const long long n = afc_state_find(&r, "M3  ");
+  if (n <= 0)
+  {
+    SetErr(err, errSize, "the save state has no board");
+    return -1;
+  }
+  std::vector<uint8_t> blocks(static_cast<size_t>(n));
+  afc_state_get(&r, blocks.data(), blocks.size());
+
+  // A block Supermodel can't find leaves the board half loaded: put back
+  // the board as it was.
+  const std::vector<uint8_t> before = SerializeBoard(c);
+  std::string why;
+  if (!LoadBoard(c, blocks.data(), blocks.size(), why))
+  {
+    std::string ignored;
+    LoadBoard(c, before.data(), before.size(), ignored);
+    SetErr(err, errSize, "the save state did not load: " + why);
+    return -1;
+  }
+  c->frame = (unsigned long)frame;
+  // The board's clock carries on from the saved frame: from now, or, for
+  // checks with ATTRACT_RTC_START, from the start the state was made with.
+  c->rtcStart = af_debug_env("ATTRACT_RTC_START") ? time_t(rtcStart)
+                                                  : std::time(nullptr) - time_t(double(c->frame) / kFrameHz);
+  c->firstBoot = false;  // the state's EEPROM holds the settings
+  c->state.clear();
+  c->stateFrame = ~0ul;
+  return 0;
+}
+
+// Link play: Supermodel's simulated net board (SimNetBoard) over TCP. This
+// cabinet listens on listenPort for the one before it and connects to next.
+// The net board holds every cabinet to the ring each frame (as on the real
+// board), so framesync is always on; the flag is accepted for the API.
+// Which cabinet this is (master, slave, its car) is the game's own test-mode
+// setting, kept in its EEPROM.
+// A cabinet that sends nothing for kLinkTimeoutMs breaks the link (stock
+// Supermodel waits for ever). The first exchange, while the others may still
+// be booting, has kLinkHandshakeTimeoutMs; a slave waits for it without
+// holding its frames, the master holds until the ring answers.
+constexpr unsigned kLinkTimeoutMs = 3000;
+constexpr unsigned kLinkHandshakeTimeoutMs = 30000;
+
+int LinkStart(afcore *c, int listenPort, const char *next, int /*framesync*/, char *err, size_t errSize)
+{
+  if (c->frame > 0)
+  {
+    SetErr(err, errSize, "link play starts before the first frame");
+    return -1;
+  }
+  if (!c->game.netboard_present)
+  {
+    SetErr(err, errSize, "this game has no network board");
+    return -1;
+  }
+  std::string address = next ? next : "";
+  size_t colon = address.rfind(':');
+  long port = colon == std::string::npos ? 0 : std::strtol(address.c_str() + colon + 1, nullptr, 10);
+  if (listenPort <= 0 || listenPort > 65535 || colon == std::string::npos || colon == 0 || port <= 0 || port > 65535)
+  {
+    SetErr(err, errSize, "link play needs a listen port and the next cabinet as host:port");
+    return -1;
+  }
+  std::string host = address.substr(0, colon);
+  if (host.size() > 2 && host.front() == '[' && host.back() == ']')
+    host = host.substr(1, host.size() - 2);
+  // The net board registers its message handlers before the server
+  // listens: a cabinet that connected in between was refused ("message not
+  // known") and never came back (a 16-cabinet ring failed 3 runs in 3).
+  auto server = std::make_shared<CNetServer>(uint16_t(listenPort), "Arcade Foundry " + c->game.name);
+  c->config.Set("Network", true);
+  c->config.Set("SimulateNet", true);
+  c->config.Set("PortIn", unsigned(listenPort));
+  c->config.Set("PortOut", unsigned(port));
+  c->config.Set<std::string>("AddressOut", host);
+  c->config.Set("LinkTimeout", kLinkTimeoutMs);
+  c->config.Set("LinkHandshakeTimeout", kLinkHandshakeTimeoutMs);
+  if (Result::OKAY != c->model3->AttachNetwork(server))
+  {
+    SetErr(err, errSize, c->logger->lastError.empty() ? "the network board did not start" : c->logger->lastError);
+    c->config.Set("Network", false);
+    c->model3->AttachNetwork(nullptr);
+    return -1;
+  }
+  if (!server->Start())
+  {
+    SetErr(err, errSize, "cannot listen on port " + std::to_string(listenPort));
+    c->config.Set("Network", false);
+    c->model3->AttachNetwork(nullptr);
+    return -1;
+  }
+  c->netServer = std::move(server);
+  c->firstBoot = false;  // a linked cabinet keeps the role its settings give it
+  return 0;
+}
+
+int LinkState(afcore *c, int *id, int *count)
 {
   if (id)
     *id = 0;
   if (count)
     *count = 0;
-  return AFCORE_LINK_OFF;
+  auto *board = c->netServer ? dynamic_cast<CSimNetBoard *>(c->model3->GetNetBoard()) : nullptr;
+  if (!board)
+    return AFCORE_LINK_OFF;
+  switch (board->LinkInfo(id, count))
+  {
+  case 1: return AFCORE_LINK_WAITING;
+  case 2: return AFCORE_LINK_UP;
+  case 3: return AFCORE_LINK_LOST;
+  default: return AFCORE_LINK_OFF;
+  }
 }
 
 const char *Error(afcore *c)
@@ -1104,6 +1366,11 @@ extern "C" AFCORE_EXPORT const afcore_api *M3_CAT(afcore_api_, M3CORE_ROMSET)(vo
     kStereoScale,
     ScreenSurface,
     CheckRoms,
+    nullptr,  // options
+    nullptr,  // set_option
+    StateSize,
+    SaveState,
+    LoadState,
   };
   return &api;
 }

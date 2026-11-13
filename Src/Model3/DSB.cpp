@@ -491,6 +491,20 @@ void CDSB1::SaveState(CBlockFile *StateFile)
 
 	// Z80 CPU state
 	Z80.SaveState(StateFile, "DSB1 Z80");
+
+	// Arcade Foundry: what Supermodel's state leaves out, so the music
+	// carries on exactly: the decoder, the samples carried to the next
+	// frame, the resampler's position and the address latches.
+	StateFile->NewBlock("DSB1 AF", __FILE__);
+	MpegDec::SaveDecoder(StateFile, mpegROM);
+	int32_t frac[2];
+	Resampler.GetFrac(frac);
+	StateFile->Write(frac, sizeof(frac));
+	StateFile->Write(&retainedSamples, sizeof(retainedSamples));
+	StateFile->Write(mpegL, 0x644);
+	StateFile->Write(mpegR, 0x644);
+	StateFile->Write(&startLatch, sizeof(startLatch));
+	StateFile->Write(&endLatch, sizeof(endLatch));
 }
 
 void CDSB1::LoadState(CBlockFile *StateFile)
@@ -540,6 +554,19 @@ void CDSB1::LoadState(CBlockFile *StateFile)
 	}
 	else {
 		MpegDec::Stop();
+	}
+
+	if (Result::OKAY == StateFile->FindBlock("DSB1 AF"))  // Arcade Foundry's states
+	{
+		MpegDec::LoadDecoder(StateFile, mpegROM);
+		int32_t frac[2];
+		StateFile->Read(frac, sizeof(frac));
+		Resampler.SetFrac(frac);
+		StateFile->Read(&retainedSamples, sizeof(retainedSamples));
+		StateFile->Read(mpegL, 0x644);
+		StateFile->Read(mpegR, 0x644);
+		StateFile->Read(&startLatch, sizeof(startLatch));
+		StateFile->Read(&endLatch, sizeof(endLatch));
 	}
 }
 
@@ -1115,6 +1142,18 @@ void CDSB2::SaveState(CBlockFile *StateFile)
 	M68KSetContext(&M68K);
 	M68KSaveState(StateFile, "DSB2 68K");
 
+	// Arcade Foundry: as DSB1 AF, and the 68K's timer
+	StateFile->NewBlock("DSB2 AF", __FILE__);
+	MpegDec::SaveDecoder(StateFile, mpegROM);
+	int32_t frac[2];
+	Resampler.GetFrac(frac);
+	StateFile->Write(frac, sizeof(frac));
+	StateFile->Write(&retainedSamples, sizeof(retainedSamples));
+	StateFile->Write(mpegL, 0x644);
+	StateFile->Write(mpegR, 0x644);
+	StateFile->Write(&m_cyclesElapsedThisFrame, sizeof(m_cyclesElapsedThisFrame));
+	StateFile->Write(&m_nextTimerInterruptCycles, sizeof(m_nextTimerInterruptCycles));
+
 	//DEBUG
 	//printf("DSB2 PC=%06X\n", M68KGetPC());
 	//printf("mpegStart=%X, mpegEnd=%X\n", mpegStart, mpegEnd);
@@ -1175,6 +1214,19 @@ void CDSB2::LoadState(CBlockFile *StateFile)
 	}
 	else {
 		MpegDec::Stop();
+	}
+
+	if (Result::OKAY == StateFile->FindBlock("DSB2 AF"))  // Arcade Foundry's states
+	{
+		MpegDec::LoadDecoder(StateFile, mpegROM);
+		int32_t frac[2];
+		StateFile->Read(frac, sizeof(frac));
+		Resampler.SetFrac(frac);
+		StateFile->Read(&retainedSamples, sizeof(retainedSamples));
+		StateFile->Read(mpegL, 0x644);
+		StateFile->Read(mpegR, 0x644);
+		StateFile->Read(&m_cyclesElapsedThisFrame, sizeof(m_cyclesElapsedThisFrame));
+		StateFile->Read(&m_nextTimerInterruptCycles, sizeof(m_nextTimerInterruptCycles));
 	}
 
 	//DEBUG

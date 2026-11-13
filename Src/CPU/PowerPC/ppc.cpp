@@ -995,6 +995,15 @@ void ppc_save_state(CBlockFile *SaveState)
 	
 	SaveState->Write(ppc.fpr, sizeof(ppc.fpr));
 	SaveState->Write(ppc.sr, sizeof(ppc.sr));
+	// Arcade Foundry save states: what the block above leaves out, so the
+	// game carries on to the cycle (an interrupt waiting to be taken, the
+	// timebase and decrementer's counting)
+	SaveState->NewBlock("PowerPC AF", __FILE__);
+	SaveState->Write(&ppc.interrupt_pending, sizeof(ppc.interrupt_pending));
+	SaveState->Write(&ppc.tb_base_icount, sizeof(ppc.tb_base_icount));
+	SaveState->Write(&ppc.dec_base_icount, sizeof(ppc.dec_base_icount));
+	SaveState->Write(&ppc.dec_trigger_cycle, sizeof(ppc.dec_trigger_cycle));
+	SaveState->Write(&ppc.timer_ratio, sizeof(ppc.timer_ratio));
 }
 
 void ppc_load_state(CBlockFile *SaveState)
@@ -1074,6 +1083,14 @@ void ppc_load_state(CBlockFile *SaveState)
 	
 	SaveState->Read(ppc.fpr, sizeof(ppc.fpr));
 	SaveState->Read(ppc.sr, sizeof(ppc.sr));
+	if (Result::OKAY == SaveState->FindBlock("PowerPC AF"))  // Arcade Foundry's states
+	{
+		SaveState->Read(&ppc.interrupt_pending, sizeof(ppc.interrupt_pending));
+		SaveState->Read(&ppc.tb_base_icount, sizeof(ppc.tb_base_icount));
+		SaveState->Read(&ppc.dec_base_icount, sizeof(ppc.dec_base_icount));
+		SaveState->Read(&ppc.dec_trigger_cycle, sizeof(ppc.dec_trigger_cycle));
+		SaveState->Read(&ppc.timer_ratio, sizeof(ppc.timer_ratio));
+	}
 }
 
 UINT32 ppc_get_gpr(unsigned num)

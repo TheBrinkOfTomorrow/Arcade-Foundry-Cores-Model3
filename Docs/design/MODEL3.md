@@ -125,6 +125,41 @@ The core wraps Supermodel's `CModel3`:
   `Core/src/core_versions.h`, bumped with a change to how that game plays
   or saves.
 
+### Save states
+
+`state_size`, `save_state` and `load_state` (afcore 5.4, the app's plan in
+Insert Coin's docs/design/SAVE-STATES.md) use Supermodel's own save state:
+`CModel3::SaveState`, every device in a `CBlockFile`, as its F5 key writes,
+kept in memory (`CBlockFile::CreateInMemory`, `LoadFromMemory`). The core
+wraps it in afcommon/state.h's layout: an `AFM3` chunk (the core's frame
+count and clock start) and an `M3  ` chunk (the block file). About 31 MB
+before compression, 5.7 MB with zlib (Scud Race mid-race). Refused while a
+link runs.
+
+Supermodel's state alone brings back a game that plays on but not the same
+game: a loaded run drifted from the saved one in its first frame. What it
+left out, now saved in extra blocks named `... AF` that stock Supermodel
+skips (and a state without them still loads as before):
+
+- `Model 3 AF`: `gpusReady`. A fresh core has not run a frame, so its first
+  frame after a load skipped the vblank (the IRQ2 and MIDI interrupt
+  loops), 164,000 PowerPC cycles short, which moved the sound commands.
+  This was the cause of the drift.
+- `PowerPC AF`: the pending interrupts, the timebase and decrementer bases
+  and the timer ratio.
+- `Sound Board 68K AF`: the whole Musashi context up to its cycle tables and
+  callbacks (pointers), not just the registers.
+- `DSB1 AF`, `DSB2 AF`: the MPEG decoder as it is (minimp3's state, the
+  frame being played out, the position in the ROM; Supermodel only keeps
+  the position and restarts decoding there), the resampler's fraction, the
+  samples carried to the next frame, the address latches (DSB1) and the
+  68K's 1 kHz timer (DSB2).
+
+With them a loaded run draws every frame and plays every sample as the run
+that saved it (`Core/tests/save_state_check.sh`, below). The core's clock
+carries on from the state's frame, counted from now, so the board's date
+moves on as for a cabinet switched off and on.
+
 ### The board's clock
 
 Stock Supermodel reads the host's clock on every RTC read. That made Daytona
@@ -142,6 +177,93 @@ then makes the single-cabinet change an operator would make in test mode,
 fixing the settings checksum, and resets the board once. Only the knowledge
 of where that setting lives is in the code. The resulting EEPROM is byte for
 byte what the test-mode change gives.
+
+Le Mans 24 (only the Japanese set exists) starts in COUNTRY JAPAN, which
+its test mode changes only on a hidden screen (test menu top level: Start,
+Start, Service, Service, Start, Test; Service then cycles JAPAN, USA,
+EXPORT, AUSTRALIA). On a first boot the core sets EXPORT the same way:
+English attract and no Japan-only warning (2026-11-10). It only
+touches the game's own first-boot settings (save counter 1, country Japan),
+so a save where the player chose Japan stays Japan. Car select and race
+prompts stay Japanese in every country.
+
+### Link play
+
+The games with a network board (Daytona USA 2, Scud Race, Sega Rally 2, Le
+Mans 24, Harley-Davidson, Spikeout, Virtual-On 2, Dirt Devils) link through
+Supermodel's simulated network board, `CSimNetBoard`. It does not run the
+board's own CPU: it moves each cabinet's block of shared memory round a TCP
+ring once a frame, in lockstep. Each cabinet listens for the one before it
+and connects to the next. The protocol is Supermodel's own
+(`Src/Network/NetProtocol.h`), so a core links with stock Supermodel.
+
+- **Sockets.** Supermodel's network layer is written against SDL_net. The
+  cores have no SDL, so `Core/src/nosdl/sdlnet_posix.cpp` gives it the SDL_net
+  calls it uses on POSIX sockets: TCP_NODELAY, no SIGPIPE, SO_REUSEADDR on the
+  listening port, and a 1 s connect timeout. Supermodel's files compile
+  unchanged against it.
+- **Starting.** `link_start(listen_port, "host:port")` sets the network
+  settings, makes the board again (`CModel3::AttachNetwork`, after the game is
+  loaded) and only then lets the server listen, so no cabinet can connect
+  before the board's message handlers are there.
+- **Who is who.** The master is the game's own setting (test mode, kept in
+  the EEPROM). Daytona USA 2 and Scud Race: "M3SEGA" block, word 15 high byte
+  LINK ID (0 single, 1 master, 2 slave), low byte the car from 0; word 6
+  counts saves; CRC-16/XMODEM of words 6-34 in word 3, a copy at 35-63. Sega
+  Rally 2: "M3SEGA" "RS2C" block, word 12 bits 6 and up LINK TYPE (0x00 stand
+  alone, 0x40 master/car 1, 0x80 slave/car 2, then cars 3 and 4); word 7
+  counts saves and word 5 looks like a checksum. Its LINK TYPE shows in test
+  mode only while a link is started. Harley-Davidson: the Daytona 2 layout
+  (signature words 4-5 0a11 0054); word 16 low byte COMMUNICATION (0
+  stand-alone, 1 network), word 17 high byte PRIVILEGE MODE (0 master, 1
+  slave), low byte CABINET ID from 0. Le Mans 24 and Dirt Devils (signatures
+  a319 015f and a319 0299): no mirror (words 36-63 are leftover RAM), word 3
+  a CRC-16 with poly 0x1021 and init 0x5a81 over words 6-33. Le Mans 24: word
+  12 low byte COMMUNICATION MODE (2 no link, 0 master, 1 slave) and high
+  byte the country (0 Japan, 1 USA, 2 Export, 3 Australia), word 25 low
+  byte the cabinet from 0, word 22 low byte SPECIAL CAR (only the car
+  highlighted first on car select); its CRC is also init 0x1247 over words
+  4-33. Dirt Devils: word 12 low byte (0 master, 1 slave, 2
+  satellite, 3 no link), word 23 high byte MACHINE ID from 0. These three
+  show their settings in test mode with no link started. The car each cabinet drives is its own
+  setting, not its place in the ring. The board numbers the others in ring order: master 0, its next
+  1, and so on. That is the opposite way to the Model 2 comm board, so a hub
+  wiring Model 3 cabinets uses the other ring direction. A linked core skips
+  the first-boot single-cabinet setting.
+- **Timeouts.** Stock Supermodel waits for ever for the next block. The cores
+  give the first exchange 30 s, while the other cabinets may still be
+  booting; a slave waits for it without holding its frames, so only the
+  master stops until the ring answers. Once the link is up a block that does
+  not come within 3 s breaks the link: the cabinet tells the others with an
+  empty block, the game shows its own link-broken state, and `link_state`
+  says LOST.
+- **Segment order.** Each cabinet's block of shared memory goes round the
+  ring; segment 0 is its own, and segment k holds the machine k places before
+  it. Dirt Devils reads them the other way round (segment k is the machine k
+  places after), so the board reverses segments 1 to n-1 for that game; with
+  two cabinets the two orders are the same. With upstream's order its slaves
+  get the countdown but stay on the grid with a stopped timer; reversed,
+  Harley stays on its boot screen, so it is set per game
+  (`ATTRACT_M3_NET_REVERSE=0/1` overrides it for tests). Issue #55.
+- **Cabinets started apart.** A cabinet's own frame count when the link comes
+  up depends on when it was started (a cabinet waiting for the link runs
+  unpaced, about 900 frames a second), and lockstep keeps that offset. The
+  games still race together: Harley with 4 cabinets started 0/3/6/9 s apart
+  and Daytona USA 2 with 3 started 0/3/6 s apart kept one race, with the same
+  timer to within 2 frames. Input scripts for linked runs count from the link
+  coming up (`m3run --from-link 1`).
+- **Cabinet counts run so far.** Daytona USA 2 and Le Mans 24: 2 and 3.
+  Harley-Davidson and Dirt Devils: 2, 3 and 4. Scud Race and Sega Rally
+  2: 2.
+- **Lockstep only.** Every frame waits for every cabinet's block to come
+  round the ring, so `framesync` is always on and there is no slack as in the
+  Model 1/2 cores. That is fine on a wired LAN; Wi-Fi rings will run at the
+  speed of the slowest lap.
+- **Tests without ROMs.** `m3netlink` (Core/tests/netlink_test.cpp) is one
+  cabinet's board driven as a game drives it; `Core/tests/netlink_ring.sh`
+  makes a ring of any size on one machine, optionally mixing in
+  `m3netlink_sdl`, the same board on SDL_net as stock Supermodel builds it.
+  `m3run --link-listen PORT --link-next HOST:PORT` runs a real game linked.
 
 ### Graphics
 
@@ -200,6 +322,7 @@ is not used for checking.
 | Game database | `Config/Games.xml`, Supermodel's, built into each core |
 | Core versions | `Core/src/core_versions.h` |
 | Saves | `<save_dir>/<romset>.nv`, Supermodel's format |
+| Save states | Bytes the front end keeps (afcommon/state.h: `AFM3`, `M3  `); not on disk in the core |
 | Input scripts | `Core/inputs/<set>_test.txt`, `<set>_game.txt` |
 | Upstream fixes taken | `UPSTREAM.md` |
 
@@ -245,6 +368,14 @@ in ARM64-PERFORMANCE.md. The reference tools (`refrun.sh`, the
   clock start.
 - **Every game** has a test-mode script and a full-game script, run to game
   over, before it is called done.
+- **Save states:** `Core/tests/save_state_check.sh BUILD ROM SCRIPT N FRAMES`
+  runs a game three times: plain, saving a state after frame N, and from
+  that state. The second and third must match the first on every frame's
+  CRC after N and every sound sample. On 10 Nov 2026 on Linux (llvmpipe),
+  everything matched in these runs: Scud Race mid-race (save at 1800) and
+  in test mode (900); Daytona USA 2 mid-race (2400, DSB2) and in test mode
+  (1000); Virtua Fighter 3 mid-fight (3000). A state of another set, or
+  one with a flipped byte, is refused.
 - **Renderers that cannot match bit for bit** (Metal against OpenGL) are
   compared with `tools/ppmdiff.py` on screenshots. The limits are a share of
   pixels and a size of difference; edges differ because GPUs round coverage
@@ -255,8 +386,6 @@ in ARM64-PERFORMANCE.md. The reference tools (`refrun.sh`, the
 
 ## Open items
 
-- Link play between cabinets (issue #35). The network board's TCP link
-  moves to plain sockets when it comes.
 - The Pi 5 and Pi 4 at full speed in races, and merging the GLES renderer
   and the PowerPC recompiler (see ARM64-PERFORMANCE.md).
 - Force feedback from the drive board to real wheels.

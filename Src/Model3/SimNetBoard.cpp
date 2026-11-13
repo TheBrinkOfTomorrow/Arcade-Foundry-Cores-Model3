@@ -21,6 +21,8 @@
  **/
 
 #include <thread>
+#include <algorithm>
+#include <cstdlib>
 #include "Supermodel.h"
 #include "SimNetBoard.h"
 #include <OSD/Thread.h>
@@ -91,6 +93,20 @@ Result CSimNetBoard::Init(uint8_t* netRAMPtr, uint8_t* netBufferPtr)
 	if (!m_server)
 		return ErrorLog("Net board requires the network server.");
 	m_link = std::make_unique<CNetBoardLink>(m_server, addr_out, port_out);
+
+	// Arcade Foundry: with LinkTimeout (ms), a cabinet that stops sending
+	// breaks the link instead of holding this one for ever. The first
+	// exchange, while the other cabinets may still be booting, gets
+	// LinkHandshakeTimeout, and a slave waits for it without holding frames.
+	m_timeoutMs = m_config["LinkTimeout"].ValueAsDefault<unsigned>(0);
+	// Arcade Foundry (issue #55): Dirt Devils reads the other machines'
+	// segments the opposite way round to the other games (with 3 or more
+	// cabinets its slaves otherwise stay on the grid; Harley breaks if they
+	// are reversed). ATTRACT_M3_NET_REVERSE=0/1 overrides it for tests.
+	m_reverseSegments = IsGame("dirtdvls");
+	if (const char *reverse = std::getenv("ATTRACT_M3_NET_REVERSE"))
+		m_reverseSegments = reverse[0] == '1';
+	m_link->SetReceiveTimeout(m_timeoutMs ? m_config["LinkHandshakeTimeout"].ValueAsDefault<unsigned>(m_timeoutMs) : 0);
 
 	return Result::OKAY;
 }
@@ -191,6 +207,11 @@ void CSimNetBoard::RunFrame(void)
 			}
 			else
 			{
+				// Arcade Foundry: with a timeout, wait for the master's first
+				// block without holding the frame
+				if (m_timeoutMs && !m_link->CheckDataAvailable())
+					break;
+
 				// receive GUID from the previous machine and check it matches
 				auto& recv_data = m_link->Receive();
 				if (recv_data.empty())
@@ -242,6 +263,7 @@ void CSimNetBoard::RunFrame(void)
 			}
 
 			m_numMachines = numMachines + 1;
+			m_machineIndex = machineIndex;
 
 			m_status0 = 0;		// supposed to cycle between 0 and 1 (also 2 for Daytona 2); doesn't seem to matter
 			m_status1 = 0x2021 + (numMachines * 0x20) + machineIndex;
@@ -262,6 +284,7 @@ void CSimNetBoard::RunFrame(void)
 			CommRAM16[0xe] = FLIPENDIAN16(RAM16[0x402] - m_segmentSize + 0x200);
 
 			m_state = State::ready;
+			m_link->SetReceiveTimeout(m_timeoutMs);
 		}
 		else
 		{
@@ -319,6 +342,9 @@ void CSimNetBoard::RunFrame(void)
 			}
 			else if (RAM16[0x200] < 0x8000)	// slave
 			{
+				if (m_timeoutMs && !m_link->CheckDataAvailable())
+					break;	// Arcade Foundry: as for type one
+
 				// receive GUID from the previous machine and check it matches
 				auto& recv_data = m_link->Receive();
 				if (recv_data.empty())
@@ -367,7 +393,9 @@ void CSimNetBoard::RunFrame(void)
 			else
 			{
 				// relay/satellite
-				
+				if (m_timeoutMs && !m_link->CheckDataAvailable())
+					break;	// Arcade Foundry: as for type one
+
 				// receive GUID from the previous machine and check it matches
 				auto& recv_data = m_link->Receive();
 				if (recv_data.empty())
@@ -430,6 +458,7 @@ void CSimNetBoard::RunFrame(void)
 			}
 
 			m_numMachines = numMachines.total + 1;
+			m_machineIndex = machineIndex.total;
 
 			m_status0 = 5;			// probably not necessary
 			if (IsGame("dirtdvls"))
@@ -453,6 +482,7 @@ void CSimNetBoard::RunFrame(void)
 			CommRAM16[0xe] = FLIPENDIAN16(RAM16[0x206] + 0x80);
 
 			m_state = State::ready;
+			m_link->SetReceiveTimeout(m_timeoutMs);
 		}
 		break;
 
@@ -478,6 +508,15 @@ void CSimNetBoard::RunFrame(void)
 			memcpy(CommRAM + 0x100 + (i + 1) * m_segmentSize, recv_data.data(), recv_data.size());
 		}
 
+		// Arcade Foundry (issue #55): reversed, segment k holds the machine k
+		// places after this one instead of k before (no difference with two).
+		if (m_state == State::ready && m_reverseSegments)
+		{
+			for (int k = 1, j = m_numMachines - 1; k < j; k++, j--)
+				std::swap_ranges(CommRAM + 0x100 + k * m_segmentSize, CommRAM + 0x100 + (k + 1) * m_segmentSize,
+					CommRAM + 0x100 + j * m_segmentSize);
+		}
+
 		// swap CommRAM banks
 		if (m_commbank)
 		{
@@ -498,6 +537,18 @@ void CSimNetBoard::RunFrame(void)
 		// do nothing
 		break;
 	}
+
+	// Arcade Foundry: a receive that timed out is a broken link, wherever it
+	// was (a retry of the first exchange would read the next block out of
+	// step). Tell the others, and the game, as for an empty block.
+	if (m_state != State::error && m_link && m_link->TimedOut())
+	{
+		ErrorLog("Net board: no data from the previous machine for too long; link broken.");
+		m_link->Send(nullptr, 0);
+		m_state = State::error;
+		if (m_gameType == GameType::one)
+			m_status1 = 0x40;
+	}
 }
 
 void CSimNetBoard::Reset(void)
@@ -511,6 +562,29 @@ void CSimNetBoard::Reset(void)
 
 	m_running = false;
 	m_state = State::start;
+}
+
+int CSimNetBoard::LinkInfo(int *id, int *count) const
+{
+	if (id)
+		*id = 0;
+	if (count)
+		*count = 0;
+	if (!m_attached || !m_running)
+		return 0;
+	switch (m_state)
+	{
+	case State::ready:
+		if (id)
+			*id = m_machineIndex + 1;
+		if (count)
+			*count = m_numMachines;
+		return 2;
+	case State::error:
+		return 3;
+	default:
+		return 1;
+	}
 }
 
 bool CSimNetBoard::IsAttached(void)
@@ -540,6 +614,7 @@ void CSimNetBoard::ConnectProc(void)
 	{
 		if (m_quit)
 			return;
+		CThread::Sleep(100);	// Arcade Foundry: no busy loop while the next machine is not up
 	}
 
 	// wait until the previous machine has linked

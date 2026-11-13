@@ -78,6 +78,9 @@ class CDSBResampler
 public:
 	int		UpSampleAndMix(float *outL, float *outR, INT16 *inL, INT16 *inR, UINT8 volumeL, UINT8 volumeR, int sizeOut, int sizeIn, int outRate, int inRate);
 	void	Reset(void);
+	// Arcade Foundry save states: the position between input samples
+	void	GetFrac(int32_t frac[2]) const { frac[0] = nFrac; frac[1] = pFrac; }
+	void	SetFrac(const int32_t frac[2]) { nFrac = frac[0]; pFrac = frac[1]; }
 	CDSBResampler(const Util::Config::Node &config)
 	  : m_config(config)
 	{

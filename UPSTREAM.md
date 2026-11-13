@@ -34,6 +34,17 @@ Makefiles, the SDL, OSX and Unix front-end code, Pro1000, Network, Legacy3D
 - Async rendering and lazy passes in the render path
 - PowerPC wait-loop skip (`Src/CPU/PowerPC/ppc_ops.c`)
 - Stereo eyes for VR headsets and 3D displays (New3D `RenderEye`)
+- Link play in the cores: `Core/src/nosdl/sdlnet_posix.cpp` gives `Src/Network`
+  SDL_net's TCP calls on POSIX sockets; `CModel3::AttachNetwork` makes the net
+  board after the game is loaded; `CNetBoardLink::SetReceiveTimeout` lets
+  `Receive` give up (upstream waits forever; 0 keeps that); `CSimNetBoard`
+  takes `LinkTimeout` and `LinkHandshakeTimeout` from the config, lets a slave
+  wait for the first exchange without holding its frame, treats a timeout as
+  a broken link, sleeps between connect retries, and reports the link with
+  `LinkInfo` for `afcore` `link_state`. The wire protocol is unchanged.
+  Dirt Devils reads the other machines' segments in the opposite order, so
+  `CSimNetBoard` reverses them for that game (issue #55; upstream's order
+  leaves its slaves on the grid with 3 or more cabinets).
 - Removed: Windows builds (`MSVC/`, `Libraries/`, `Makefile.Win32`,
   `Src/OSD/Windows/`), upstream CI and release scripts, README images
 

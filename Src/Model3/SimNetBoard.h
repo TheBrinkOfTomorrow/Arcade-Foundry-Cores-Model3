@@ -59,6 +59,11 @@ public:
 	bool IsAttached(void);
 	bool IsRunning(void);
 
+	// Arcade Foundry: the link's state for the core API. 0 off (not attached
+	// or not started by the game yet), 1 waiting for the other machines,
+	// 2 up (*id 1-based, *count machines), 3 broken.
+	int LinkInfo(int *id, int *count) const;
+
 	void GetGame(const Game& gameInfo);
 
 	uint8_t ReadCommRAM8(unsigned addr);
@@ -97,6 +102,9 @@ private:
 	State m_state = State::start;
 
 	uint8_t m_numMachines = 0;
+	uint8_t m_machineIndex = 0;  // 0 the master (Arcade Foundry: LinkInfo)
+	unsigned m_timeoutMs = 0;	// Arcade Foundry: LinkTimeout, 0 = wait for ever (stock)
+	bool m_reverseSegments = false;	// Arcade Foundry: Dirt Devils' segment order (issue #55)
 	uint16_t m_counter = 0;
 
 	uint16_t m_segmentSize = 0;

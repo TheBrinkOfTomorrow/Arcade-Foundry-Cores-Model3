@@ -157,6 +157,16 @@ public:
   INetBoard * GetNetBoard(void);
 
   /*
+   * AttachNetwork(server):
+   *
+   * Arcade Foundry: (re)makes the net board with this network server, after
+   * Init() has loaded the game, so a core can start link play once it knows
+   * the ports (the config's Network, SimulateNet, PortIn, PortOut and
+   * AddressOut must be set first). Call before the first frame.
+   */
+  Result AttachNetwork(std::shared_ptr<CNetServer> server);
+
+  /*
    * DumpTimings(void):
    *
    * Prints all timings for the most recent frame to the console, for debugging purposes.

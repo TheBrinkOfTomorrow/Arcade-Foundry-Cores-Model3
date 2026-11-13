@@ -49,6 +49,7 @@
 #define INCLUDED_NETBOARDLINK_H
 
 #include "Network/NetServer.h"
+#include <chrono>
 #include <condition_variable>
 #include <cstdint>
 #include <deque>
@@ -92,6 +93,18 @@ public:
    */
   std::vector<uint8_t> &Receive(void);
 
+  /*
+   * SetReceiveTimeout(milliseconds), TimedOut(void):
+   *
+   * Arcade Foundry: Receive() gives up after this long and returns an empty
+   * block, as for a broken link; TimedOut() then says so, for good. 0 waits
+   * for ever (stock Supermodel). The net board sets a long one for the first
+   * exchange, while the other cabinets may still be booting, and a short
+   * one once the link is up.
+   */
+  void SetReceiveTimeout(unsigned milliseconds);
+  bool TimedOut(void);
+
   // True if Receive() can return data immediately
   bool CheckDataAvailable(void);
 
@@ -122,6 +135,8 @@ private:
   std::shared_ptr<CTCPConnection> m_input;
   std::deque<std::vector<uint8_t>> m_queue;
   std::vector<uint8_t> m_received;      // last block that Receive() returned
+  unsigned m_timeoutMs = 0;
+  bool m_timedOut = false;
 
   CNetServer::Registration m_joinHandler;
   CNetServer::Registration m_dataHandler;

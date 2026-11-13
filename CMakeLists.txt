@@ -172,6 +172,7 @@ set(SUPERMODEL_SOURCES
 
 set(CORE_SOURCES
   ${CMAKE_SOURCE_DIR}/Core/src/m3core.cpp
+  ${CMAKE_SOURCE_DIR}/common/src/state.c  # save states' bytes (afcommon/state.h)
   ${GAMES_XML_CPP}
 )
 if(M3CORE_METAL)
@@ -189,7 +190,10 @@ endif()
 if(M3CORE_SDL)
   list(APPEND SUPERMODEL_SOURCES ${S}/Network/NetServer.cpp ${S}/Network/TCPConnection.cpp ${S}/OSD/SDL/Thread.cpp)
 else()
-  list(APPEND CORE_SOURCES ${CMAKE_SOURCE_DIR}/Core/src/nosdl/thread_std.cpp ${CMAKE_SOURCE_DIR}/Core/src/nosdl/net_stub.cpp)
+  # Supermodel's network code (the net board's TCP link) on POSIX sockets in
+  # place of SDL_net (Core/src/nosdl/sdlnet_posix.cpp)
+  list(APPEND SUPERMODEL_SOURCES ${S}/Network/NetServer.cpp ${S}/Network/TCPConnection.cpp)
+  list(APPEND CORE_SOURCES ${CMAKE_SOURCE_DIR}/Core/src/nosdl/thread_std.cpp ${CMAKE_SOURCE_DIR}/Core/src/nosdl/sdlnet_posix.cpp)
 endif()
 
 # Every directory a Supermodel source sits in is on the include path, as in
@@ -257,7 +261,29 @@ endif()
 
 # m3run: runs a core for a number of frames, with an input script, and writes
 # screens and sound for comparison.
-add_executable(m3run ${CMAKE_SOURCE_DIR}/Core/tools/m3run.cpp)
+add_executable(m3run ${CMAKE_SOURCE_DIR}/Core/tools/m3run.cpp ${CMAKE_SOURCE_DIR}/common/src/state.c)
 target_include_directories(m3run PRIVATE ${AFCORE_INCLUDE})
 target_compile_definitions(m3run PRIVATE M3CORE_ROMSET=${M3CORE_ROMSET})
 target_link_libraries(m3run PRIVATE ${CORE_TARGET} ZLIB::ZLIB)
+
+# m3netlink: a network board with no game, for link tests without ROMs
+# (Core/tests/netlink_test.cpp, netlink_ring.sh). m3netlink_sdl is the same on
+# SDL_net, as stock Supermodel builds it, so a ring can mix the two.
+if(NOT CMAKE_CROSSCOMPILING)
+  set(NETLINK_SOURCES ${CMAKE_SOURCE_DIR}/Core/tests/netlink_test.cpp
+    ${S}/Model3/SimNetBoard.cpp ${S}/Model3/NetBoardLink.cpp
+    ${S}/Network/NetServer.cpp ${S}/Network/TCPConnection.cpp
+    ${S}/OSD/Logger.cpp ${S}/Util/NewConfig.cpp ${S}/Util/Format.cpp ${S}/Util/ByteSwap.cpp)
+  find_package(Threads)
+  add_executable(m3netlink ${NETLINK_SOURCES}
+    ${CMAKE_SOURCE_DIR}/Core/src/nosdl/sdlnet_posix.cpp ${CMAKE_SOURCE_DIR}/Core/src/nosdl/thread_std.cpp)
+  target_include_directories(m3netlink PRIVATE ${CMAKE_SOURCE_DIR}/Core/src/nosdl ${S} ${S}/OSD/SDL ${S}/Model3)
+  target_compile_options(m3netlink PRIVATE -w)
+  target_link_libraries(m3netlink PRIVATE Threads::Threads)
+  if(M3CORE_SDL AND SDL2_NET_LIBRARY)
+    add_executable(m3netlink_sdl ${NETLINK_SOURCES} ${S}/OSD/SDL/Thread.cpp)
+    target_include_directories(m3netlink_sdl PRIVATE ${S} ${S}/OSD ${S}/OSD/SDL ${S}/Model3 ${SDL2_INCLUDE_DIRS} ${SDL2_NET_INCLUDE_DIR})
+    target_compile_options(m3netlink_sdl PRIVATE -w)
+    target_link_libraries(m3netlink_sdl PRIVATE ${SDL2_LIBRARIES} ${SDL2_NET_LIBRARY} Threads::Threads)
+  endif()
+endif()
